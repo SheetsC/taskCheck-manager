@@ -1,10 +1,7 @@
-from flask import Flask
-from flask_migrate import Migrate
+from flask import request, make_response
+from flask_restful import Resource
+
+# Local imports
+from config import app, db, api
 
 
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-migrate = Migrate( app, db)
