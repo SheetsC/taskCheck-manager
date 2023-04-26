@@ -1,17 +1,17 @@
 from sqlalchemy_serializer import SerializerMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.associationproxy import association_proxy
-from config import db
 from sqlalchemy.ext.hybrid import hybrid_property
 from config import db, bcrypt
 # from sqlalchemy.orm import validates
 
 class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
+    serialize_rules = ('-user', '-project.tasks,name', '-user_id', '-project_id','-id' )
+    # rest of the class definition
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    description = db.Column(db.Text)
-    due_date = db.Column(db.DateTime, nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    due_date = db.Column(db.String, nullable=False)
     status = db.Column(db.String())
     complete = db.Column(db.Boolean, default= False)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
@@ -19,12 +19,13 @@ class Task(db.Model, SerializerMixin):
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
-
+    # serialize_rules = ('-tasks.user,description,due_date,complete',)
+    serialize_rules = ('-tasks')
     id = db.Column(db.Integer, primary_key= True )
     logged_in = db.Column(db.Boolean, default= False)
     name = db.Column(db.String, nullable=False)
     username = db.Column(db.String, unique= True)
-    password_hash = db.Column(db.String, nullable=False)
+    _password_hash = db.Column(db.String, nullable=False)
 
     tasks = db.relationship('Task', backref='user', cascade='all, delete-orphan')
     projects = association_proxy('tasks', 'project')
@@ -51,13 +52,13 @@ class User(db.Model, SerializerMixin):
 
 class Project(db.Model, SerializerMixin):
     __tablename__ = 'projects' 
-
+    serialize_rules=('-users','-tasks')
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     budget = db.Column(db.Float)
-    start_date = db.Column(db.DateTime, nullable=False)
-    end_date = db.Column(db.DateTime, nullable=False)
+    start_date = db.Column(db.DateTime, server_default = db.func.now())
+    end_date = db.Column(db.String())
     status = db.Column(db.String(255))
     complete = db.Column(db.Boolean, default= False)
 
