@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
+
 import {
   Routes,
   Route,
 } from "react-router-dom";
 import { Login } from './Login';
 import { SignUp } from './Signup';
+import { Logout} from './Logout';
 export function App() {
   const [user, setUser] = useState(null);
 
@@ -20,7 +22,12 @@ export function App() {
     setUser(user);
 }
   function handleLogout(){
-    setUser(null);
+      fetch("/logout", {
+          method: "DELETE",
+      }).then(
+          // () => onLogout()
+          setUser(null)
+      );
   }
 return (
   <div className="App">
@@ -35,7 +42,7 @@ return (
                   <Route path="/login" element={<Login handleLogin={handleLogin}/>} />
                   <Route path="/signup" element={<SignUp setUser={setUser}/>} />
                   {/* <Route path="/profile" element={<Profile user={user} handleLogout={handleLogout} handleUpdate={handleUpdate} setUser={setUser} tix={tixArray} deleteEvent={deleteEvent}/>} /> */}
-                  <Route path="/" element={<button onClick={handleLogout}>Logout</button>} />
+                  <Route path="/" element={<Logout handleLogout={handleLogout}/>} />
               </Routes>
       </header>
   </div>

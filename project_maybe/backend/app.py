@@ -69,8 +69,8 @@ class Logout(Resource):
         # username = request.get_json().get('username')
         # user = Fan.query.filter(Fan.username == username).first()
         # flash(f"You have been logged out! See you again, {username}")
-        user = User.query.filter(User.id == session['user_id'].first())
-        user.logged_in = True
+        user = User.query.filter(User.id == session['user_id']).first()
+        user.logged_in = False
         db.session.commit()
         session.pop("user_id", None)
         
