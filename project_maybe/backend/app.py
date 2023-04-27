@@ -1,6 +1,7 @@
 from flask import Flask, make_response, jsonify, request, session, flash
 from flask_restful import Resource
 
+
 # Local imports
 from config import app, db, api, bcrypt
 from models import User, Task, Project
@@ -47,9 +48,9 @@ class Login(Resource):
 
         # if user.authenticate(password):
         if user is None:
-            return {'error': 'Invalid email or password'}, 401
+            return {'error': 'Invalid username or password'}, 401
         if not bcrypt.check_password_hash(user._password_hash, password):
-            return {'error': 'Invalid email or password'}, 401
+            return {'error': 'Invalid username or password'}, 401
 
         flash("Login Successful!")
     
@@ -59,7 +60,6 @@ class Login(Resource):
         session['user_id'] = user.id
         return jsonify({
             "id": user.id,
-            "name": user.name,
             "username": user.username,
             
         })
@@ -69,8 +69,11 @@ class Logout(Resource):
         # username = request.get_json().get('username')
         # user = Fan.query.filter(Fan.username == username).first()
         # flash(f"You have been logged out! See you again, {username}")
+        user = User.query.filter(User.id == session['user_id'].first())
+        user.logged_in = True
+        db.session.commit()
         session.pop("user_id", None)
-
+        
         return {}, 204
 
 class CheckSession(Resource):
@@ -88,7 +91,7 @@ class ClearSession(Resource):
 
     def delete(self):
 
-        session['page_views'] = None
+        # session['page_views'] = None
         session['user_id'] = None
 
         return {}, 204
@@ -249,7 +252,11 @@ api.add_resource(Projects, '/projects')
 api.add_resource(ProjectsById, '/projects/<int:id>')
 api.add_resource(ProjectsByUserId, '/users/<int:id>/projects')
 api.add_resource(TasksByProjectId, '/projects/<int:id>/tasks')
-api.add_resource(Login, '/login')
+api.add_resource(ClearSession, '/clear', endpoint='clear')
+api.add_resource(SignUp, '/signup', endpoint='signup')
+api.add_resource(Login, '/login', endpoint='login')
+api.add_resource(Logout, '/logout', endpoint='logout')
+api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 
 
 api.add_resource(Home, '/')

@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from config import db, bcrypt
+from datetime import datetime
 # from sqlalchemy.orm import validates
 
 class Task(db.Model, SerializerMixin):
@@ -20,7 +21,7 @@ class Task(db.Model, SerializerMixin):
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
     # serialize_rules = ('-tasks.user,description,due_date,complete',)
-    serialize_rules = ('-tasks')
+    serialize_rules = ('-tasks',)
     id = db.Column(db.Integer, primary_key= True )
     logged_in = db.Column(db.Boolean, default= False)
     name = db.Column(db.String, nullable=False)
@@ -57,7 +58,7 @@ class Project(db.Model, SerializerMixin):
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     budget = db.Column(db.Float)
-    start_date = db.Column(db.DateTime, server_default = db.func.now())
+    start_date = db.Column(db.DateTime, default=datetime.utcnow)
     end_date = db.Column(db.String())
     status = db.Column(db.String(255))
     complete = db.Column(db.Boolean, default= False)
