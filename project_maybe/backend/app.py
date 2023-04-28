@@ -231,18 +231,18 @@ class ProjectsByUserId(Resource):
         task_project = task.project
         if task_project == None:
             return make_response({'error': 'user has no tasks'}, 404)
-        return make_response(task_project.to_dict(), 200)
+        return make_response([task_project.to_dict()], 200)
     
 
-class TasksByProjectId(Resource):
+class TasksByUserId(Resource):
     def get(self, id):
         
         # project = Project.query.filter_by(id=id).first()
-        task = Task.query.filter(Task.project_id == id).first()
-        if task == None:
+        tasks = [t.to_dict() for t in Task.query.filter(Task.user_id == id).all()]
+        if tasks == None:
             return make_response({'error': 'user has no tasks'}, 404)
-        session['project_id'] = task.project.id
-        return make_response(task.to_dict(), 200)
+        # session['project_id'] = task.project.id
+        return make_response(tasks, 200)
 
 api.add_resource(Tasks, '/tasks')
 api.add_resource(TasksById, '/tasks/<int:id>')
@@ -251,7 +251,7 @@ api.add_resource(UsersById, '/users/<int:id>')
 api.add_resource(Projects, '/projects')
 api.add_resource(ProjectsById, '/projects/<int:id>')
 api.add_resource(ProjectsByUserId, '/users/<int:id>/projects')
-api.add_resource(TasksByProjectId, '/projects/<int:id>/tasks')
+api.add_resource(TasksByUserId, '/users/<int:id>/tasks')
 api.add_resource(ClearSession, '/clear', endpoint='clear')
 api.add_resource(SignUp, '/signup', endpoint='signup')
 api.add_resource(Login, '/login', endpoint='login')

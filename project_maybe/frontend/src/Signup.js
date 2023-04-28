@@ -6,29 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 export function SignUp({ setUser }) {
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
-  // const [dob, setDob] = useState("");
-  // const [fans, setFans] = useState([{}]);
     const navigate = useNavigate()
-
-  // useEffect(() => {
-  //   // console.log("FETCH! ");
-  //   fetch("/fans")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setFans(data);
-  //       console.log(data);
-  //     });
-  // }, []);
-
     const formSchema = yup.object().shape({
         username: yup
         .string()
-        // .username("Invalid username")
         .required('required'),
         password: yup
         .string()
@@ -71,28 +52,7 @@ export function SignUp({ setUser }) {
     const handleShow = () => {
         setShow(!show)
     }
-  // function handleSubmit(e) {
-  //   e.preventDefault();
-  //   fetch("/signup", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       username,
-  //       password,
-  //       passwordConfirmation,
-  //       first_name: firstName,
-  //       last_name: lastName,
-  //       dob: dob
-  //     }),
-  //   }).then((r) => {
-  //     if (r.ok) {
-  //       r.json().then((user) => setUser(user));
-  //     }
-  //   })
-  //   navigate('/login')
-  // }
+
 
     return (
         <div class='mt-28'>

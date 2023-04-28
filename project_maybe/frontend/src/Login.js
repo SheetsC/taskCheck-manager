@@ -32,7 +32,7 @@ export function Login({ handleLogin }) {
         }).then((r) => {
             if (r.ok) {
                 r.json().then((user) => handleLogin(user))
-                nagigate('/')
+                nagigate('/projects')
             }
             else {
                 toggleModal()
