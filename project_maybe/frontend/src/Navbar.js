@@ -17,7 +17,7 @@ function Navbar({user, setUser, onLogout}) {
                     <h1 className="NavLink" to='/' end>TaskCheck Manager</h1>
                     <NavLink className="NavLink" to = "./" end>Home <FontAwesomeIcon icon="fa-solid fa-house"/></NavLink>
                     {user ? (
-                        <Link className="NavLink" to="/profile">Profile <FontAwesomeIcon icon="fa-solid fa-address-card"/></Link>
+                        <Link className="NavLink" to="/projects">Projects <FontAwesomeIcon icon="fa-solid fa-address-card"/></Link>
                     ) : (
                         <Link className="NavLink" to="/login">Profile <FontAwesomeIcon icon="fa-solid fa-address-card"/></Link>
                     )}
@@ -27,7 +27,7 @@ function Navbar({user, setUser, onLogout}) {
                 </div> */}
                 {user ? (
                     <div class="flex justify-between gap-x-6">
-                        <p className="logout"><FontAwesomeIcon icon="fa-solid fa-poo"/> Welcome, {user?.first_name}!</p>
+                        <p className="logout"><FontAwesomeIcon icon="fa-solid fa-poo"/> Welcome, {user?.name}!</p>
                         <Link className="logoutbtn" to="/login" onClick={onLogout}>Logout <FontAwesomeIcon icon="fa-solid fa-power-off"/></Link>
                     </div>
                 ) : (

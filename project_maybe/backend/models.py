@@ -8,7 +8,7 @@ from datetime import datetime
 
 class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
-    serialize_rules = ('-user', '-project.tasks,name', '-user_id', '-project_id','-id' )
+    serialize_rules = ('-user', '-project.tasks,name', '-user_id', '-project_id' )
     # rest of the class definition
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text, nullable=False)
