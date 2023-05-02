@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export function TaskCard({ id, description, complete }) {
+export function TaskCard({ id, description, complete, projectId, changeCompleteOnTaskId }) {
   const [isComplete, setIsComplete] = useState(complete);
 
   const toggleComplete = () => {
@@ -11,7 +11,8 @@ export function TaskCard({ id, description, complete }) {
       body: JSON.stringify({ complete: newCompleteValue })
     })
       .then(() => {
-        setIsComplete(!isComplete); // Update the state with the new value
+        setIsComplete(!isComplete); 
+        changeCompleteOnTaskId(id, projectId, !isComplete);
       })
       .catch(error => {
         console.error('Error updating task:', error);
