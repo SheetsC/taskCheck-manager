@@ -19,7 +19,7 @@ export function App() {
       }
     });
   }, []);
-
+//fetch to user project to get task but include tasks for project in serialize
   useEffect(() => {
     fetch(`/users/${user?.id}/tasks`)
       .then((r) => r.json())
@@ -64,16 +64,36 @@ export function App() {
       return updatedProjectTasks;
     });
   }
-  
+  //refactor when i have my projects
+  const addNewTask = (userId, projectId, taskObj) => {
+    setProjectTasks((prevProjectTasks) => {
+      const updatedProjectTasks = prevProjectTasks.map((projectTask) => {
+        if (projectTask.tasks[0]?.project.id === projectId) {
+          const updatedTasks = [...projectTask.tasks, { ...taskObj, userId }];
+          return { ...projectTask, tasks: updatedTasks }; // Add projectId property
+        } else {
+          return projectTask;
+        }
+      });
+      return updatedProjectTasks;
+    });
+  };
   return (
     <div className="App">
       <header className="App-header">
         <Navbar user={user} setUser={setUser} onLogout={handleLogout} />
         <Routes>
-          <Route path="/tasks" element={<Tasks setProjectTasks={setProjectTasks} projectTasks={projectTasks} changeCompleteOnTaskId={changeCompleteOnTaskId} userProjects={userProjects} />} />
+          <Route path="/tasks" element={<Tasks  
+            projectTasks={projectTasks} 
+            changeCompleteOnTaskId={changeCompleteOnTaskId}  
+            addNewTask={addNewTask}
+            user={user}
+          />} />
           <Route path="/login" element={<Login handleLogin={handleLogin} />} />
           <Route path="/signup" element={<SignUp setUser={setUser} />} />
-          <Route path="/projects" element={<Projects userProjects={userProjects} projectTasks={projectTasks} />} />
+          <Route path="/projects" element={<Projects 
+            userProjects={userProjects} 
+            projectTasks={projectTasks} />} />
         </Routes>
       </header>
     </div>

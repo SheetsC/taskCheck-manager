@@ -2,6 +2,7 @@ from flask import Flask, make_response, jsonify, request, session, flash
 from flask_restful import Resource
 
 
+
 # Local imports
 from config import app, db, api, bcrypt
 from models import User, Task, Project
@@ -103,7 +104,7 @@ class Tasks(Resource):
             return make_response(t_list, 200)
         return make_response({'error':'not found'},404)
     def post(self):
-        data = request.get_json
+        data = request.get_json()
         newTask = Task(
             description = data['description'],
             due_date = data['due_date'],
@@ -222,7 +223,7 @@ class ProjectsById(Resource):
         p = Project.query.filter_by(id=id).first()
         if p == None:
             return make_response("no user found", 404)
-        db.session.delete(p)
+        db.session.delete()
         db.session.commit()
 
 class ProjectsByUserId(Resource):
@@ -233,7 +234,30 @@ class ProjectsByUserId(Resource):
             return make_response({'error': 'user has no tasks'}, 404)
         return make_response([task_project.to_dict()], 200)
     
+class TaskByProjectId (Resource):
+    def post(self, id, user_id):
+        if 'user_id' in session:
+            user_id = session['user_id']
+            data = request.get_json()
 
+            new_task = Task(
+                description = data['description'],
+                due_date = data['due_date'],
+                status = data['status'],
+                complete = False,
+                project_id = id,
+                user_id = user_id,
+
+            )
+            # import ipdb; ipdb.set_trace()
+            try:
+                db.session.add(new_task)
+                db.session.commit()
+                
+            except:
+                db.session.rollback()
+                return make_response({'error': f'mew'}, 422)
+            return make_response(new_task.to_dict(), 201)
 class TasksByUserId(Resource):
     def get(self, id):
         
@@ -246,17 +270,19 @@ class TasksByUserId(Resource):
 
 api.add_resource(Tasks, '/tasks')
 api.add_resource(TasksById, '/tasks/<int:id>')
+api.add_resource(TasksByUserId, '/users/<int:id>/tasks')
+api.add_resource(TaskByProjectId, '/projects/<int:id>/users/<int:user_id>/tasks')
 api.add_resource(Users, '/users')
 api.add_resource(UsersById, '/users/<int:id>')
 api.add_resource(Projects, '/projects')
 api.add_resource(ProjectsById, '/projects/<int:id>')
 api.add_resource(ProjectsByUserId, '/users/<int:id>/projects')
-api.add_resource(TasksByUserId, '/users/<int:id>/tasks')
 api.add_resource(ClearSession, '/clear', endpoint='clear')
 api.add_resource(SignUp, '/signup', endpoint='signup')
 api.add_resource(Login, '/login', endpoint='login')
 api.add_resource(Logout, '/logout', endpoint='logout')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
+
 
 
 api.add_resource(Home, '/')

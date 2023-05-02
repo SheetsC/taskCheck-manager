@@ -9,7 +9,6 @@ from datetime import datetime
 class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
     serialize_rules = ('-user', '-project.tasks,name', '-user_id', '-project_id' )
-    # rest of the class definition
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text, nullable=False)
     due_date = db.Column(db.String, nullable=False)
@@ -37,7 +36,6 @@ class User(db.Model, SerializerMixin):
 
     @password_hash.setter
     def password_hash(self, password):
-        # utf-8 encoding and decoding is required in python 3
         password_hash = bcrypt.generate_password_hash(
             password.encode('utf-8'))
         self._password_hash = password_hash.decode('utf-8')
@@ -53,7 +51,7 @@ class User(db.Model, SerializerMixin):
 
 class Project(db.Model, SerializerMixin):
     __tablename__ = 'projects' 
-    serialize_rules=('-users','-tasks')
+    serialize_rules=('-users','-tasks.project')
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
