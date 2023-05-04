@@ -8,7 +8,8 @@ from datetime import datetime
 
 class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
-    serialize_rules = ('-user', '-project.tasks,name', '-user_id', '-project_id' )
+    serialize_rules = ('-users', '-projects', '-user', '-project')
+
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text, nullable=False)
     due_date = db.Column(db.String, nullable=False)
@@ -20,7 +21,7 @@ class Task(db.Model, SerializerMixin):
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
     # serialize_rules = ('-tasks.user,description,due_date,complete',)
-    serialize_rules = ('-tasks',)
+    serialize_rules = ('-tasks','-projects')
     id = db.Column(db.Integer, primary_key= True )
     logged_in = db.Column(db.Boolean, default= False)
     name = db.Column(db.String, nullable=False)
@@ -51,7 +52,7 @@ class User(db.Model, SerializerMixin):
 
 class Project(db.Model, SerializerMixin):
     __tablename__ = 'projects' 
-    serialize_rules=('-users','-tasks.project')
+    serialize_rules=('tasks', '-users' )
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)

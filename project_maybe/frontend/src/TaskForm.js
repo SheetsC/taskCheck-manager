@@ -16,15 +16,14 @@ export function TaskForm({projectId, user, addNewTask}) {
             description: description,
             due_date: dueDate,
             status: status,
-            complete: false,
+            complete: !complete,
             project_id: projectId,
             user_id: user.id
         }
         console.log(newTask)
         // addEvent(newEvent)
-        const key = Date.now()
 
-        fetch(`/projects/${projectId}/users/${user.id}/tasks`, {
+        fetch(`/projects/${projectId}/tasks`, {
         method: "POST",
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify(newTask)
@@ -32,7 +31,7 @@ export function TaskForm({projectId, user, addNewTask}) {
         .then(r=>r.json())
         .then(data => {
             console.warn(data)
-            addNewTask(user.id, projectId, data)
+            addNewTask( user.id, projectId, data)
         })
     }
 

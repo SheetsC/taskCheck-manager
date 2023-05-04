@@ -1,44 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { TaskCard } from './TaskCard';
 import { TaskForm } from './TaskForm';
+import { useLocation } from 'react-router-dom';
 
-export function Tasks({ projectTasks, changeCompleteOnTaskId, user, addNewTask}) {
+
+export function Tasks({ deleteTask, user, userTasks, changeCompleteOnTaskId, addNewTask, setProjectTasks, projectTasks }) {  
+  const location = useLocation();
+  const projectId = 
+  location.state.projectId;
+  // const user = JSON.parse(location.state.user);
+
+  const filteredTasks = userTasks.filter(task => task.project_id === projectId);
+  // rest of the component code
+  // console.log(filteredTasks)
+  useEffect(() =>{
+    setProjectTasks(filteredTasks)
+  
+  },[userTasks])
   const [showForm, setShowForm] = useState(false);
-
   const seeTaskForm = () => {
     setShowForm(!showForm);
   };
-
-  const tasks = [...projectTasks].map(task => task.tasks).flat();
-  const project_id = projectTasks.length > 0 ? projectTasks[0].tasks[0].project.id : "";
-  const projectName = projectTasks.length > 0 ? projectTasks[0].tasks[0].project.name : "";
-
-  const uniqueTasks = tasks.reduce((acc, task) => {
-    const existingTaskIndex = acc.findIndex(t => t.id === task.id && t.dueDate === task.dueDate && t.description === task.description);
-    if (existingTaskIndex === -1) {
-      acc.push(task);
-    } else {
-      acc[existingTaskIndex] = task;
-    }
-    return acc;
-  }, []);
-
-  const taskComponents = tasks.map((task) => {
-    return (
-      <TaskCard
-        key={task.id}
-        {...task}
-        changeCompleteOnTaskId={changeCompleteOnTaskId}
-      />
-    );
+  const taskComponents = filteredTasks.map((task) => {
+    return(
+    <TaskCard key={task.id} deleteTask={deleteTask} projectTasks={projectTasks}changeCompleteOnTaskId={changeCompleteOnTaskId}{...task}/>
+  )
   });
-
+  
   return (
     <div>
       <h1>
-        Tasks for {projectName}
-        <button onClick={seeTaskForm}>+</button>
-        {showForm ? (<TaskForm key={1} projectId = {project_id} addNewTask={addNewTask} user={user}/>) : null}
+        <button 
+          onClick={seeTaskForm}
+        >+</button>
+        {showForm ? (<TaskForm key={1} projectId={projectId} addNewTask={addNewTask} user={user}/>) : null}
       </h1>
       <ul>{taskComponents}</ul>
     </div>

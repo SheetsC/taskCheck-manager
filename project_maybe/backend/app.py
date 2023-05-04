@@ -172,15 +172,35 @@ class Users(Resource):
             return make_response({'error': f'{repr(e)}'}, 422)
 
     
+# class UsersById(Resource):
+#     def get(self, id):
+#             for u in User.query.filter_by(id=id).all():
+#                 unique_projects = [p for p in u.projects.filter()]
+#                 u_dict= {
+#                     "name": u.name,
+#                     "username" : u.username,
+#                     "logged_in": u.logged_in,
+#                     "projects": [p.to_dict() for p in unique_projects]
+#                 }
+#                 return make_response(u_dict, 200)
 class UsersById(Resource):
     def get(self, id):
-            for u in User.query.filter_by(id=id).all():
-                u_dict= {
-                    "name": u.name,
-                    "username" : u.username,
-                    "logged_in": u.logged_in,
-                }
-                return make_response(u_dict, 200)
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return make_response({"error": "User not found"}, 404)
+        project_ids = set()
+        unique_projects = []
+        for project in user.projects:
+            if project.id not in project_ids:
+                project_ids.add(project.id)
+                unique_projects.append(project.to_dict())
+        u_dict = {
+            "name": user.name,
+            "username" : user.username,
+            "logged_in": user.logged_in,
+            "projects": unique_projects
+        }
+        return make_response(u_dict, 200)
     def delete(self, id):
          u = User.query.filter_by(id=id).first()
          if u == None:
@@ -223,21 +243,38 @@ class ProjectsById(Resource):
         p = Project.query.filter_by(id=id).first()
         if p == None:
             return make_response("no user found", 404)
-        db.session.delete()
+        db.session.delete(p)
         db.session.commit()
 
 class ProjectsByUserId(Resource):
     def get(self, id):
-        task = Task.query.filter(Task.user_id == id).first()
-        task_project = task.project
-        if task_project == None:
+        projects_list = []
+        for p in Project.query.filter(Project.users.any(id=id)).all():
+            p_dict = {
+                'id' : p.id,
+                'name' : p.name,
+                'description' : p.description,
+                'budget' : p.budget,
+                'start_date' : p.start_date,
+                'end_date' : p.end_date,
+                'status' : p.status,
+                'complete' : p.complete,
+            }       
+            projects_list.append(p_dict)
+        if projects_list == None:
             return make_response({'error': 'user has no tasks'}, 404)
-        return make_response([task_project.to_dict()], 200)
+        return make_response(projects_list, 200)
     
 class TaskByProjectId (Resource):
-    def post(self, id, user_id):
+    def get(self, id):
+        project = Project.query.filter_by(id=id).first()
+        if project is None:
+            return make_response({'error': 'project not found'}, 404)
+        tasks = [t.to_dict() for t in project.tasks]
+        return make_response(tasks,202)
+
+    def post(self, id):
         if 'user_id' in session:
-            user_id = session['user_id']
             data = request.get_json()
 
             new_task = Task(
@@ -246,7 +283,7 @@ class TaskByProjectId (Resource):
                 status = data['status'],
                 complete = False,
                 project_id = id,
-                user_id = user_id,
+                user_id = data['user_id'],
 
             )
             # import ipdb; ipdb.set_trace()
@@ -267,11 +304,14 @@ class TasksByUserId(Resource):
             return make_response({'error': 'user has no tasks'}, 404)
         # session['project_id'] = task.project.id
         return make_response(tasks, 200)
+    
+
+
 
 api.add_resource(Tasks, '/tasks')
 api.add_resource(TasksById, '/tasks/<int:id>')
 api.add_resource(TasksByUserId, '/users/<int:id>/tasks')
-api.add_resource(TaskByProjectId, '/projects/<int:id>/users/<int:user_id>/tasks')
+api.add_resource(TaskByProjectId, '/projects/<int:id>/tasks')
 api.add_resource(Users, '/users')
 api.add_resource(UsersById, '/users/<int:id>')
 api.add_resource(Projects, '/projects')

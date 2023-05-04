@@ -1,14 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-export function ProjectCard({ id, name, end_date, booleanCompleted}) {
-  const undoneTask = booleanCompleted.filter(value => value !== true);
+export function ProjectCard({ id, name, end_date, tasks, booleanCompleted, user }) {
+  const navigate = useNavigate();
   
+  
+  function handleClick() {
+    navigate('/tasks', { state: { projectId: id, user: user } });
+  }
+
   return (
-    <Link to="/tasks/">
+    <div onClick={handleClick}>
       <h3>
-        Project: {name} Due: {end_date} {undoneTask.length > 0 ? 'Not complete' : 'Complete'}
+        Project: {name} Due: {end_date} 
+        {booleanCompleted.length > 0 ? 'Not complete' : 'Complete'}
       </h3>
-    </Link>
+    </div>
   );
 }

@@ -15,25 +15,47 @@ export function App() {
   useEffect(() => {
     fetch('/check_session').then((response) => {
       if (response.ok) {
-        response.json().then((user) => setUser(user));
+        response.json().then((user) => {
+          sessionStorage.setItem('user', JSON.stringify(user));
+          setUser(user);
+        });
+      } else {
+        const userFromLocalStorage = localStorage.getItem('user');
+        if (userFromLocalStorage) {
+          setUser(JSON.parse(userFromLocalStorage));
+        }
       }
     });
-  }, []);
-//fetch to user project to get task but include tasks for project in serialize
-  useEffect(() => {
-    fetch(`/users/${user?.id}/tasks`)
-      .then((r) => r.json())
-      .then((tasks) => {
-        setUserTasks(tasks);
-        const projectNames = [...new Set(tasks.map((task) => task.project))];
-        setUserProjects(projectNames);
-        const projectTasks = projectNames.map((project) => ({
-          tasks: tasks.filter((task) => task.project === project),
-        }));
-        setProjectTasks(projectTasks);
-      })
-      .catch((error) => console.error(error));
   }, [user?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetch(`/users/${user.id}`)
+        .then(response => response.json())
+        .then(userData => {
+          // Set user's projects
+          setUserProjects(userData.projects);
+  
+          // Set user's tasks
+          const tasks = userData.projects.flatMap(project => project.tasks);
+          setUserTasks(tasks);
+  
+          // Set project tasks
+          const projectTasks = {};
+          userData.projects.forEach(project => {
+            const projectId = project.id;
+            const projectTasks = project.tasks.map(task => ({ ...task, projectId }));
+            projectTasks[projectId] = projectTasks;
+          });
+          setProjectTasks(projectTasks);
+        })
+        .catch(error => console.error(error));
+    } else {
+      setUserProjects([]);
+      setUserTasks([]);
+      setProjectTasks({});
+    }
+  }, [user]);
 
   function handleLogin(user) {
     setUser(user);
@@ -44,58 +66,89 @@ export function App() {
       method: 'DELETE',
     }).then(() => setUser(null));
   }
+  
+  function checkCompleted(likedObj){
+      const taskLiked = projectTasks.map(taskObj => {
+        if(taskObj.id === likedObj.id){
+          return likedObj
+        }else{
+          return taskObj
+        }
+      })
+      setProjectTasks(taskLiked)
+    }
+  
+    const [booleanCompleted, setBooleanCompleted] = useState([]);
 
-  function changeCompleteOnTaskId(taskId, projectId, isComplete) {
+    
+    
+
+     const seeIfAllDone = () => { 
+      const allTasks = Object.values(projectTasks).flat();
+      const completionList = allTasks.map(task => task.complete);
+      setBooleanCompleted(completionList);
+      console.log(completionList)
+    };
+
+    useEffect(() => {seeIfAllDone()},[projectTasks])
+      ;
+    
+function deleteTask (task_id)  {
+    setUserTasks(userTasks.filter(task => task.id !== task_id))
+}
+  
+
+  const addNewTask = (useid, projectId, taskObj) => {
+    setUserTasks(prevTasks => {
+      const updatedTasks = [{ ...taskObj }, ...prevTasks];
+      return updatedTasks;
+    });
+  
     setProjectTasks(prevProjectTasks => {
+      const projectToUpdate = prevProjectTasks.find(projectTask => projectTask.projectId === projectId);
+  
+      if (!projectToUpdate) {
+        return prevProjectTasks;
+      }
+  
+      const updatedTasks = [{ ...taskObj }, ...projectToUpdate.tasks];
       const updatedProjectTasks = prevProjectTasks.map(projectTask => {
         if (projectTask.projectId === projectId) {
-          const updatedTasks = projectTask.tasks.map(task => {
-            if (task.id === taskId) {
-              return {...task, complete: isComplete};
-            } else {
-              return task;
-            }
-          });
-          return {...projectTask, tasks: updatedTasks};
+          return { ...projectTask, tasks: updatedTasks };
         } else {
           return projectTask;
         }
       });
-      return updatedProjectTasks;
-    });
-  }
-  //refactor when i have my projects
-  const addNewTask = (userId, projectId, taskObj) => {
-    setProjectTasks((prevProjectTasks) => {
-      const updatedProjectTasks = prevProjectTasks.map((projectTask) => {
-        if (projectTask.tasks[0]?.project.id === projectId) {
-          const updatedTasks = [...projectTask.tasks, { ...taskObj, userId }];
-          return { ...projectTask, tasks: updatedTasks }; // Add projectId property
-        } else {
-          return projectTask;
-        }
-      });
+  
       return updatedProjectTasks;
     });
   };
+  
+
   return (
     <div className="App">
       <header className="App-header">
         <Navbar user={user} setUser={setUser} onLogout={handleLogout} />
         <Routes>
-          <Route path="/tasks" element={<Tasks  
-            projectTasks={projectTasks} 
-            changeCompleteOnTaskId={changeCompleteOnTaskId}  
+          <Route path={`/tasks`} element={<Tasks
+            projectTasks={projectTasks}
+            setProjectTasks={setProjectTasks}
+            changeCompleteOnTaskId={checkCompleted}
             addNewTask={addNewTask}
+            deleteTask={deleteTask}
             user={user}
+            userProjects={userProjects}
+            userTasks={userTasks}
           />} />
           <Route path="/login" element={<Login handleLogin={handleLogin} />} />
           <Route path="/signup" element={<SignUp setUser={setUser} />} />
           <Route path="/projects" element={<Projects 
-            userProjects={userProjects} 
-            projectTasks={projectTasks} />} />
-        </Routes>
-      </header>
-    </div>
-  );
-}
+             userProjects={userProjects} 
+             projectTasks={projectTasks} 
+             booleanCompleted={booleanCompleted}
+             />} />
+         </Routes>
+       </header>
+     </div>
+   );
+ }
