@@ -16,7 +16,7 @@ export function TaskForm({projectId, user, addNewTask}) {
             description: description,
             due_date: dueDate,
             status: status,
-            complete: !complete,
+            complete: true,
             project_id: projectId,
             user_id: user.id
         }

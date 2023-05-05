@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export function ProjectCard({ id, name, end_date, tasks, booleanCompleted, user }) {
+export function ProjectCard({ complete, id, name, end_date, user, tasks }) {
   const navigate = useNavigate();
+  
   
   
   function handleClick() {
@@ -13,7 +14,7 @@ export function ProjectCard({ id, name, end_date, tasks, booleanCompleted, user 
     <div onClick={handleClick}>
       <h3>
         Project: {name} Due: {end_date} 
-        {booleanCompleted.length > 0 ? 'Not complete' : 'Complete'}
+        {complete ? " - Complete" : ""}
       </h3>
     </div>
   );

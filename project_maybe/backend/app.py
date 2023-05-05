@@ -245,7 +245,23 @@ class ProjectsById(Resource):
             return make_response("no user found", 404)
         db.session.delete(p)
         db.session.commit()
+    def patch(self, id):
+        data = request.get_json()
+        try:
+            p = Project.query.filter_by(id = id).first()
 
+            for attr in request.get_json():
+                setattr(p, attr, data[attr])
+        except:
+            response_body = {
+                'error': 'no task'
+            }
+            return make_response( response_body, 404 )
+        else:
+            db.session.add(p)
+            db.session.commit()
+        
+        return make_response(p.to_dict(), 200)
 class ProjectsByUserId(Resource):
     def get(self, id):
         projects_list = []

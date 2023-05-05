@@ -4,7 +4,7 @@ import { TaskForm } from './TaskForm';
 import { useLocation } from 'react-router-dom';
 
 
-export function Tasks({ deleteTask, user, userTasks, changeCompleteOnTaskId, addNewTask, setProjectTasks, projectTasks }) {  
+export function Tasks({ deleteTask, user, userTasks, checkCompleted, addNewTask, setProjectTasks, projectTasks }) {  
   const location = useLocation();
   const projectId = 
   location.state.projectId;
@@ -23,7 +23,7 @@ export function Tasks({ deleteTask, user, userTasks, changeCompleteOnTaskId, add
   };
   const taskComponents = filteredTasks.map((task) => {
     return(
-    <TaskCard key={task.id} deleteTask={deleteTask} projectTasks={projectTasks}changeCompleteOnTaskId={changeCompleteOnTaskId}{...task}/>
+    <TaskCard key={task.id} deleteTask={deleteTask} projectTasks={projectTasks}checkCompleted={checkCompleted}{...task} projectId={projectId}/>
   )
   });
   

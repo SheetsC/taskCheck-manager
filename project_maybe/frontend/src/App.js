@@ -11,8 +11,10 @@ export function App() {
   const [userProjects, setUserProjects] = useState([]);
   const [userTasks, setUserTasks] = useState([]);
   const [projectTasks, setProjectTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // add loading state
 
   useEffect(() => {
+    setIsLoading(true); // set loading to true before making the fetch request
     fetch('/check_session').then((response) => {
       if (response.ok) {
         response.json().then((user) => {
@@ -25,10 +27,11 @@ export function App() {
           setUser(JSON.parse(userFromLocalStorage));
         }
       }
-    });
+    }).finally(() => setIsLoading(false)); // set loading to false when the request is done
   }, [user?.id]);
 
   useEffect(() => {
+    setIsLoading(true); // set loading to true before making the fetch request
     if (user?.id) {
       fetch(`/users/${user.id}`)
         .then(response => response.json())
@@ -44,16 +47,19 @@ export function App() {
           const projectTasks = {};
           userData.projects.forEach(project => {
             const projectId = project.id;
-            const projectTasks = project.tasks.map(task => ({ ...task, projectId }));
-            projectTasks[projectId] = projectTasks;
+            const tasksWithProjectId = project.tasks.map(task => ({ ...task, projectId }));
+            projectTasks[projectId] = tasksWithProjectId;
           });
+          console.log(projectTasks);
           setProjectTasks(projectTasks);
         })
-        .catch(error => console.error(error));
+        .catch(error => console.error(error))
+        .finally(() => setIsLoading(false)); // set loading to false when the request is done
     } else {
       setUserProjects([]);
       setUserTasks([]);
       setProjectTasks({});
+      setIsLoading(false); // set loading to false when there is no user
     }
   }, [user]);
 
@@ -66,34 +72,30 @@ export function App() {
       method: 'DELETE',
     }).then(() => setUser(null));
   }
+  function checkCompleted(likedObj, callback) {
+    const taskLiked = projectTasks.map((taskObj) =>
+      taskObj.id === likedObj.id ? likedObj : taskObj
+    );
+    setProjectTasks(taskLiked);
+    setUserTasks(taskLiked);
   
-  function checkCompleted(likedObj){
-      const taskLiked = projectTasks.map(taskObj => {
-        if(taskObj.id === likedObj.id){
-          return likedObj
-        }else{
-          return taskObj
-        }
-      })
-      setProjectTasks(taskLiked)
-    }
+    
   
-    const [booleanCompleted, setBooleanCompleted] = useState([]);
+    const updatedProjects = userProjects.map((project) => {
+      const tasksForProject = taskLiked.filter((task) => task.project_id === project.id);
+      const projectComplete = tasksForProject.every((task) => task.completed);
+      return {
+        ...project,
+        completed: projectComplete,
+      };
+    });
+  
+    setProjectTasks(taskLiked);
+    setUserProjects(updatedProjects);
+  }
 
     
-    
-
-     const seeIfAllDone = () => { 
-      const allTasks = Object.values(projectTasks).flat();
-      const completionList = allTasks.map(task => task.complete);
-      setBooleanCompleted(completionList);
-      console.log(completionList)
-    };
-
-    useEffect(() => {seeIfAllDone()},[projectTasks])
-      ;
-    
-function deleteTask (task_id)  {
+  function deleteTask (task_id)  {
     setUserTasks(userTasks.filter(task => task.id !== task_id))
 }
   
@@ -124,16 +126,18 @@ function deleteTask (task_id)  {
     });
   };
   
-
   return (
     <div className="App">
       <header className="App-header">
         <Navbar user={user} setUser={setUser} onLogout={handleLogout} />
-        <Routes>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <Routes>
           <Route path={`/tasks`} element={<Tasks
             projectTasks={projectTasks}
             setProjectTasks={setProjectTasks}
-            changeCompleteOnTaskId={checkCompleted}
+            checkCompleted={checkCompleted}
             addNewTask={addNewTask}
             deleteTask={deleteTask}
             user={user}
@@ -143,12 +147,13 @@ function deleteTask (task_id)  {
           <Route path="/login" element={<Login handleLogin={handleLogin} />} />
           <Route path="/signup" element={<SignUp setUser={setUser} />} />
           <Route path="/projects" element={<Projects 
-             userProjects={userProjects} 
-             projectTasks={projectTasks} 
-             booleanCompleted={booleanCompleted}
-             />} />
-         </Routes>
-       </header>
-     </div>
-   );
- }
+            userProjects={userProjects} 
+            projectTasks={projectTasks} 
+            
+            />} />
+        </Routes>
+        )}
+      </header>
+    </div>
+  );
+}
