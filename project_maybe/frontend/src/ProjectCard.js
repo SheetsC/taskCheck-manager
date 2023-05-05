@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export function ProjectCard({ complete, id, name, end_date, user, tasks }) {
+export function ProjectCard({ complete, id, name, end_date, user }) {
   const navigate = useNavigate();
   
   
