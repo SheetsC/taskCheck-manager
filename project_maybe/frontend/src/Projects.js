@@ -1,26 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { array } from 'yup';
-import { ProjectCard } from './ProjectCard';
+// import React, { useEffect, useState } from 'react';
+// import { ProjectCard } from './ProjectCard';
+// //setting state for every project before it is sent to the project card
+// export function Projects({ projectStates, user, setProjects, userProjects, projectTasks, userTasks }) {
+  
+//   console.log(projectStates)
 
-export function Projects({ userProjects, projectTasks, userTasks }) {
-  console.log(projectTasks)
-  const projectIdsArray = Object.keys(projectTasks);
-  const tasksArrays = Object.values(projectTasks);
-  console.log(projectIdsArray)
-  console.log(tasksArrays)
-  const taskArray = tasksArrays.map(array => array)
-  console.log(taskArray)
-  const projectComponents = userProjects.map((project) => {
-    const tasksForProject = tasksArrays.filter(task => task.project_id === project.id);
-    return (
+//   const projectComponents = projectStates.map(project => (
+//     <ProjectCard 
+//       key={project.id}
+//       project={project}
+    
+
+//       user={user}
+//     />
+//   ));
+
+//   return <div>{projectComponents}</div>;
+// }
+import React from 'react';
+import { ProjectCard } from './ProjectCard';
+export function Projects({ projectStates, user, setProjects, userProjects, projectTasks, userTasks }) {
+  
+  const projectComponents = [];
+
+  for (const projectId in projectStates) {
+    const project = projectStates[projectId];
+    const theseTasks= userTasks.filter(tasks => tasks.project_id === project.id)
+    projectComponents.push(
       <ProjectCard 
         key={project.id}
-        {...project}
-        tasks={tasksForProject}
-        
+        project={project}
+        user={user}
+        tasks={theseTasks}
       />
     );
-  });
+  }
 
   return <div>{projectComponents}</div>;
 }

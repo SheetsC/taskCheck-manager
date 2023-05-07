@@ -11,7 +11,8 @@ sqlalchemy-serializer = "*"
 flask-restful = "*"
 flask-cors = "*"
 datetime = "*"
-ipdb = "*"
+ipdb = "==0.13.5"
+flask-bcrypt = "*"
 
 [dev-packages]
 

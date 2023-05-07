@@ -11,6 +11,7 @@ export function App() {
   const [userProjects, setUserProjects] = useState([]);
   const [userTasks, setUserTasks] = useState([]);
   const [projectTasks, setProjectTasks] = useState([]);
+  const [projectStates, setProjectStates] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // add loading state
 
   useEffect(() => {
@@ -31,21 +32,39 @@ export function App() {
   }, [user?.id]);
 
   useEffect(() => {
-    setIsLoading(true); // set loading to true before making the fetch request
+    setIsLoading(true);
     if (user?.id) {
       fetch(`/users/${user.id}`)
         .then(response => response.json())
         .then(userData => {
           // Set user's projects
           setUserProjects(userData.projects);
-  
+    
           // Set user's tasks
-          const tasks = userData.projects.flatMap(project => project.tasks);
+          const tasks = userData.projects?.flatMap(project => project.tasks);
           setUserTasks(tasks);
+  
+          // Set project states
+          const defaultProjectStates = userData.projects?.reduce((acc, project) => {
+            const projectTasks = project?.tasks.map(task => ({
+              id: task.id,
+              complete: task.complete,
+              name: task.name,
+            }));
+            acc[project.id] = {
+              id: project.id,
+              name: project.name,
+              complete: project.complete,
+              tasks: projectTasks,
+              end_date: project.end_date,
+            };
+            return acc;
+          }, {});
+          setProjectStates(defaultProjectStates);
   
           // Set project tasks
           const projectTasks = {};
-          userData.projects.forEach(project => {
+          userData.projects?.forEach(project => {
             const projectId = project.id;
             const tasksWithProjectId = project.tasks.map(task => ({ ...task, projectId }));
             projectTasks[projectId] = tasksWithProjectId;
@@ -54,12 +73,13 @@ export function App() {
           setProjectTasks(projectTasks);
         })
         .catch(error => console.error(error))
-        .finally(() => setIsLoading(false)); // set loading to false when the request is done
+        .finally(() => setIsLoading(false));
     } else {
       setUserProjects([]);
       setUserTasks([]);
+      setProjectStates([]);
       setProjectTasks({});
-      setIsLoading(false); // set loading to false when there is no user
+      setIsLoading(false);
     }
   }, [user]);
 
@@ -72,17 +92,36 @@ export function App() {
       method: 'DELETE',
     }).then(() => setUser(null));
   }
-  function checkCompleted(likedObj, callback) {
-    const taskLiked = projectTasks.map((taskObj) =>
-      taskObj.id === likedObj.id ? likedObj : taskObj
-    );
-    setProjectTasks(taskLiked);
-    setUserTasks(taskLiked);
+  // function checkCompleted(likedObj, callback) {
+  //   const taskLiked = projectTasks?.map((taskObj) =>
+  //     taskObj.id === likedObj.id ? likedObj : taskObj
+  //   );
+  //   setProjectTasks(taskLiked);
+  //   setUserTasks([...userTasks.filter((task) => task.id !== likedObj.id), likedObj]);
   
-    
+  //   const updatedProjects = userProjects?.map((project) => {
+  //     const tasksForProject = taskLiked.filter((task) => task.project_id === project.id);
+  //     const projectComplete = tasksForProject.every((task) => task.completed);
+  //     return {
+  //       ...project,
+  //       completed: projectComplete,
+  //     };
+  //   });
+  
+  //   setProjectTasks(taskLiked);
+  //   setUserProjects(updatedProjects);
+  // }
+  function checkCompleted(likedObj) {
+    const updatedTask = {
+      ...likedObj,
+      completed: !likedObj.completed
+    };
+    const updatedTasks = [...userTasks.filter((task) => task.id !== likedObj.id), updatedTask];
+  
+    setUserTasks(updatedTasks);
   
     const updatedProjects = userProjects.map((project) => {
-      const tasksForProject = taskLiked.filter((task) => task.project_id === project.id);
+      const tasksForProject = updatedTasks.filter((task) => task.project_id === project.id);
       const projectComplete = tasksForProject.every((task) => task.completed);
       return {
         ...project,
@@ -90,16 +129,15 @@ export function App() {
       };
     });
   
-    setProjectTasks(taskLiked);
     setUserProjects(updatedProjects);
   }
-
+  
     
   function deleteTask (task_id)  {
     setUserTasks(userTasks.filter(task => task.id !== task_id))
 }
   
-
+  
   const addNewTask = (useid, projectId, taskObj) => {
     setUserTasks(prevTasks => {
       const updatedTasks = [{ ...taskObj }, ...prevTasks];
@@ -148,7 +186,13 @@ export function App() {
           <Route path="/signup" element={<SignUp setUser={setUser} />} />
           <Route path="/projects" element={<Projects 
             userProjects={userProjects} 
-            projectTasks={projectTasks} 
+            projectTasks={projectTasks}
+            projects={userProjects}
+            setProjects={setUserProjects}
+            projectStates={projectStates} // Pass the project state object as a prop
+            setProjectStates={setProjectStates}
+            user={user} // Pass the setter function for the project state object as a prop
+            userTasks={userTasks} // Pass the setter function for the
             
             />} />
         </Routes>
