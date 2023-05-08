@@ -11,7 +11,7 @@ export function Tasks({ userProjects, deleteTask, user, userTasks, checkComplete
   // const user = JSON.parse(location.state.user);
   const project = userProjects.filter(project => project.id === projectId)
   const projectName=project.map(project=>{return project.name})
-  const filteredTasks = userTasks.filter(task => task.project_id === projectId);
+  const filteredTasks = userTasks.filter(task => task.project_id === projectId && task.user_id === user.id) ;
   // rest of the component code
   // console.log(filteredTasks)
   useEffect(() =>{
@@ -34,12 +34,12 @@ export function Tasks({ userProjects, deleteTask, user, userTasks, checkComplete
     
     return taskA.due_date.localeCompare(taskB.due_date);
   }).map((task) => {
-    return <TaskCard key={task.id} userProjects={userProjects}deleteTask={deleteTask} projectTasks={projectTasks} checkCompleted={checkCompleted} {...task} projectId={projectId} />;
+    return <TaskCard key={task.id} user={user} userTasks={userTasks} userProjects={userProjects}deleteTask={deleteTask} projectTasks={projectTasks} checkCompleted={checkCompleted} {...task} projectId={projectId} />;
   });
   
   return (
     <div>
-      <h1> Tasks for {projectName}
+      <h1> My Tasks for {projectName}
         <button 
           onClick={seeTaskForm}
         >+</button>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {Link, useNavigate} from 'react-router-dom'
 import './index.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 
 export function Login({ handleLogin }) {
   const [username, setUsername] = useState("");
@@ -60,10 +60,8 @@ export function Login({ handleLogin }) {
                 <div class="z-0 relative w-full">
                     <label htmlFor="password">Password: </label>
                     <div class="absolute inset-y-11 right-0 flex items-center px-2">
-                        <input class="hidden js-password-toggle" id="toggle" type="checkbox" />
-                        <span class="z-auto ">
-                            {show ? <FontAwesomeIcon icon="fa-solid fa-eye" onClick={handleShow}/> :  <FontAwesomeIcon icon="fa-solid fa-eye-slash" onClick={handleShow}/>
-                            }
+                        <span class="z-auto" onClick={handleShow}>
+                        {show ? "🙊":"🙈"}
                         </span>
                     </div>
                     <div>
@@ -90,7 +88,7 @@ export function Login({ handleLogin }) {
                 <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white rounded shadow p-4 text-center">
                         <h2>Stop Right There!!!</h2>
-                        <p className='mb-2'>You are an impostor and clearly not a lil stinker.</p>
+                        <p className='mb-2'>You are an impostor and have no projects.</p>
                         <button onClick={toggleModal} className="hover:bg-slate-900 hover:text-white border shadow font-bold px-4 rounded">Try Again</button>
                     </div>
                 </div>

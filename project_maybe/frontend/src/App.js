@@ -5,6 +5,8 @@ import { Login } from './Login';
 import { SignUp } from './Signup';
 import { Projects } from './Projects';
 import { Tasks } from './Tasks';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons'
 
 export function App() {
   const [user, setUser] = useState(null);
@@ -91,25 +93,6 @@ export function App() {
       method: 'DELETE',
     }).then(() => setUser(null));
   }
-  // function checkCompleted(likedObj, callback) {
-  //   const taskLiked = projectTasks?.map((taskObj) =>
-  //     taskObj.id === likedObj.id ? likedObj : taskObj
-  //   );
-  //   setProjectTasks(taskLiked);
-  //   setUserTasks([...userTasks.filter((task) => task.id !== likedObj.id), likedObj]);
-  
-  //   const updatedProjects = userProjects?.map((project) => {
-  //     const tasksForProject = taskLiked.filter((task) => task.project_id === project.id);
-  //     const projectComplete = tasksForProject.every((task) => task.completed);
-  //     return {
-  //       ...project,
-  //       completed: projectComplete,
-  //     };
-  //   });
-  
-  //   setProjectTasks(taskLiked);
-  //   setUserProjects(updatedProjects);
-  // }
   function checkCompleted(likedObj) {
     const updatedTask = {
       ...likedObj,

@@ -13,6 +13,7 @@ flask-cors = "*"
 datetime = "*"
 ipdb = "==0.13.5"
 flask-bcrypt = "*"
+bcrypt = "*"
 
 [dev-packages]
 

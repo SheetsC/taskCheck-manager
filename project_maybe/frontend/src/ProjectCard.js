@@ -4,16 +4,24 @@ import { useNavigate  } from 'react-router-dom';
 export function ProjectCard({ project, user, tasks  }) {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [otherUserTasks, setOtherUserTasks] =useState([])
+
+    
   useEffect(() => {
     fetch(`/projects/${project.id}`)
     .then(r=>r.json())
     .then(projData=> {
       setUsers(projData[0].users)
+      setOtherUserTasks(
+        projData[0].tasks.filter(
+          task=>task.user_id !== user.id && task.complete !== true
+          ))
       
     })
-  },[user?.id])
+  },[user])
   console.log(tasks);
-  
+  const myUndoneTasks= tasks.filter(task=> task.user_id === user.id && task.complete !== true)
+  console.log(myUndoneTasks);
   const allTasksComplete = tasks.every(task => task.complete);
   console.log(allTasksComplete);
   function handleClick() {
@@ -21,17 +29,23 @@ export function ProjectCard({ project, user, tasks  }) {
   }
   const userComponents =  users.map(user =>{
     return (
-      <div>
-        <ul>{user.name} | username:  {user.username} | Logged in: {user.logged_in? "True" : "False"}</ul>
+      <div key={user.id}>
+        <ul>{user.name} | 
+        username:  {user.username} | 
+        Logged in: {user.logged_in? "True" : "False"} |
+
+        </ul>
       </div>
     )
   })
 
   return (
     <div onClick={handleClick}>
-      <h3>
+      <h3 key = {project.id}>
         Project: {project.name} Due: {project.end_date} Users: {userComponents}
-        {allTasksComplete ? " - Complete" : "Not Done"}
+        {allTasksComplete ? " - Complete" : "Not Done"}: {myUndoneTasks.length > 0 ? " I have tasks to do ": " " }
+        {otherUserTasks.length > 0 ? '| Other users have tasks to do' : ''}
+        
       </h3>
     </div>
   );

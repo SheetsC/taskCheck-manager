@@ -1,33 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export function TaskCard({ userProjects ,projectId, deleteTask, id, description, due_date ,complete, checkCompleted, projectTasks }) {
+export function TaskCard({ user, userTasks, userProjects ,projectId, deleteTask, id, description, due_date ,complete, checkCompleted, projectTasks }) {
   const [isComplete, setIsComplete] = useState(complete);
 
   
-  function checkAndPatchProjectCompletion() {
-    const allTasksCompleted = projectTasks.every(task => {
-      return task.complete === true;
-    });
+  async function checkAndPatchProjectCompletion() {
+    const projectResponse = await fetch(`/projects/${projectId}`)
+    const projectData = await projectResponse.json()
     
-    const newCompleteValue = isComplete ? 0 : 1
+    const allTasksCompleted = projectData[0].tasks.every(task => {
+      return task.complete === true
+    })
+  
+    const newCompleteValue = allTasksCompleted ? 1 : 0
+  
     try {
-      if (!allTasksCompleted) {
-        fetch(`/projects/${projectId}`, {
+      if (allTasksCompleted) {
+        const response = await fetch(`/projects/${projectId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ complete: newCompleteValue })
         })
-        
-        // console.log(`Project ${projectId} marked as completed`);
-      } else {
-        fetch(`/projects/${projectId}`, {
+        if (!response.ok) {
+          throw new Error('Failed to update project completion status')
+        }
+      }
+      if (!allTasksCompleted){
+        const response = await fetch(`/projects/${projectId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ complete: newCompleteValue === 1 ? 0 : 1 })
-        });
+          body: JSON.stringify({ complete: newCompleteValue })
+        })
+        if (!response.ok) {
+          throw new Error('Failed to update project completion status')
+        }
       }
     } catch (error) {
-    
+      console.error(error)
     }
   }
   
@@ -45,18 +54,8 @@ export function TaskCard({ userProjects ,projectId, deleteTask, id, description,
         const data = await response.json();
         setIsComplete(!isComplete);
         checkCompleted(data);
-        await checkAndPatchProjectCompletion();
+        checkAndPatchProjectCompletion();
         // console.log("projectTasks:", projectTasks); // Check value of projectTasks
-        const allTasksCompleted = projectTasks.every(task => task.complete === true);
-        // console.log("allTasksCompleted:", allTasksCompleted); // Check value of allTasksCompleted
-        if (allTasksCompleted) {
-          await fetch(`/projects/${projectId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ complete: 1 })
-          });
-          // console.log(`Project ${projectId} marked as completed`);
-        }
       } catch (error) {
         // console.error('Error updating task:', error);
       }
@@ -67,6 +66,10 @@ export function TaskCard({ userProjects ,projectId, deleteTask, id, description,
         method: 'DELETE',
       });
     }
+    const [otherUserTasks, setOtherUserTasks] =useState([])
+
+    
+    console.log(otherUserTasks)
     console.log(userProjects)
     return (
       <li>
