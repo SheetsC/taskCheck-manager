@@ -246,7 +246,8 @@ class ProjectsById(Resource):
                 'end_date' : p.end_date,
                 'status' : p.status,
                 'complete' : p.complete,
-                'users': [u.to_dict() for u in p.unique_users]
+                'users': [u.to_dict() for u in p.unique_users],
+                'tasks': [t.to_dict() for t in p.unique_tasks]
             }       
             projects_list.append(p_dict)
         if projects_list == None:

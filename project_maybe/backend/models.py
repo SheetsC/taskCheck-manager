@@ -17,6 +17,8 @@ class Task(db.Model, SerializerMixin):
     complete = db.Column(db.Boolean, default= False)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
@@ -69,4 +71,7 @@ class Project(db.Model, SerializerMixin):
     def unique_users(self):
         return list(set(self.users))
 
+    @property
+    def unique_tasks(self):
+        return list(set(self.tasks))
 
