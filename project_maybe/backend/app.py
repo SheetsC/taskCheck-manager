@@ -235,10 +235,23 @@ class Projects(Resource):
         
 class ProjectsById(Resource):
     def get(self,id):
-        p = Project.query.filter_by(id=id).first()
-        if p == None:
-            return make_response("not project found", 404)
-        return make_response(p.to_dict(), 200)
+        projects_list = []
+        for p in Project.query.filter(Project.id==id).all():
+            p_dict = {
+                'id' : p.id,
+                'name' : p.name,
+                'description' : p.description,
+                'budget' : p.budget,
+                'start_date' : p.start_date,
+                'end_date' : p.end_date,
+                'status' : p.status,
+                'complete' : p.complete,
+                'users': [u.to_dict() for u in p.unique_users]
+            }       
+            projects_list.append(p_dict)
+        if projects_list == None:
+            return make_response({'error': 'user has no tasks'}, 404)
+        return make_response(projects_list, 200)
     def delete(self, id):
         p = Project.query.filter_by(id=id).first()
         if p == None:

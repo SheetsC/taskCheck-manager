@@ -13,7 +13,6 @@ export function App() {
   const [projectTasks, setProjectTasks] = useState([]);
   const [projectStates, setProjectStates] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // add loading state
-
   useEffect(() => {
     setIsLoading(true); // set loading to true before making the fetch request
     fetch('/check_session').then((response) => {

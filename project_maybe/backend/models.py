@@ -21,7 +21,7 @@ class Task(db.Model, SerializerMixin):
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
     # serialize_rules = ('-tasks.user,description,due_date,complete',)
-    serialize_rules = ('-tasks','-projects')
+    serialize_rules = ('-tasks','-projects', '-_password_hash', )
     id = db.Column(db.Integer, primary_key= True )
     logged_in = db.Column(db.Boolean, default= False)
     name = db.Column(db.String, nullable=False)
@@ -65,5 +65,8 @@ class Project(db.Model, SerializerMixin):
     tasks = db.relationship('Task', backref='project', cascade='all, delete-orphan')
     users = association_proxy('tasks', 'user')
     
+    @property
+    def unique_users(self):
+        return list(set(self.users))
 
 

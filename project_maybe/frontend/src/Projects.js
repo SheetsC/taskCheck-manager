@@ -21,6 +21,10 @@ import React from 'react';
 import { ProjectCard } from './ProjectCard';
 export function Projects({ projectStates, user, setProjects, userProjects, projectTasks, userTasks }) {
   
+  
+
+  
+  
   const projectComponents = [];
 
   for (const projectId in projectStates) {
