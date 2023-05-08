@@ -29,7 +29,7 @@ export function ProjectCard({ project, user, tasks  }) {
   }
   const userComponents =  users.map(user =>{
     return (
-      <div key={user.id}>
+      <div class='mt-03' key={user.id}>
         <ul>{user.name} | 
         username:  {user.username} | 
         Logged in: {user.logged_in? "True" : "False"} |
@@ -40,7 +40,7 @@ export function ProjectCard({ project, user, tasks  }) {
   })
 
   return (
-    <div onClick={handleClick}>
+    <div class='mt-28 text-base mx-auto rounded-full bg-emerald-400 block max-w-2xl text-center justify-center gap-x-6 p-6 lg:px-8' onClick={handleClick}>
       <h3 key = {project.id}>
         Project: {project.name} Due: {project.end_date} Users: {userComponents}
         {allTasksComplete ? " - Complete" : "Not Done"}: {myUndoneTasks.length > 0 ? " I have tasks to do ": " " }

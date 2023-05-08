@@ -68,7 +68,7 @@ export function SignUp({ setUser }) {
                 autoComplete="off"
                 value={formik.values.username}
                 onChange={formik.handleChange}
-                class="block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6"
+                class="block w-full rounded-full border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6"
                 />
                 <p style={{ color: "red" }}> {formik.errors.username}</p>
                 <div class="relative w-full">
@@ -86,7 +86,7 @@ export function SignUp({ setUser }) {
                         value={formik.values.password}
                         onChange={formik.handleChange}
                         autoComplete="current-password"
-                        class="block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6 js-password"
+                        class="block w-full rounded-full border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6 js-password"
                     />
                     <p style={{ color: "red" }}> {formik.errors.password}</p>
                 </div>
@@ -98,12 +98,12 @@ export function SignUp({ setUser }) {
                 id="name"
                 value={formik.values.name}
                 onChange={formik.handleChange}
-                class="block w-full rounded-md border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6"
+                class="block w-full rounded-full border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6"
                 />
                 <p style={{ color: "red" }}> {formik.errors.name}</p>
 
                 <div class="mt-10">
-                    <button type="submit" class="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">Submit</button>
+                    <button type="submit" class="block w-full rounded-full bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">Submit</button>
                 </div>
             </form>
         </div>

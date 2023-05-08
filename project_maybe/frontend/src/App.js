@@ -5,8 +5,7 @@ import { Login } from './Login';
 import { SignUp } from './Signup';
 import { Projects } from './Projects';
 import { Tasks } from './Tasks';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons'
+import { Home } from './Home';
 
 export function App() {
   const [user, setUser] = useState(null);
@@ -154,29 +153,29 @@ export function App() {
           <p>Loading...</p>
         ) : (
           <Routes>
-          <Route path={`/tasks`} element={<Tasks
-            projectTasks={projectTasks}
-            setProjectTasks={setProjectTasks}
-            checkCompleted={checkCompleted}
-            addNewTask={addNewTask}
-            deleteTask={deleteTask}
-            user={user}
-            userProjects={userProjects}
-            userTasks={userTasks}
-          />} />
-          <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-          <Route path="/signup" element={<SignUp setUser={setUser} />} />
-          <Route path="/projects" element={<Projects 
-            userProjects={userProjects} 
-            projectTasks={projectTasks}
-            projects={userProjects}
-            setProjects={setUserProjects}
-            projectStates={projectStates} // Pass the project state object as a prop
-            setProjectStates={setProjectStates}
-            user={user} // Pass the setter function for the project state object as a prop
-            userTasks={userTasks} // Pass the setter function for the
-            
-            />} />
+            <Route path= "/" element={<Home/>} />
+            <Route path={`/tasks`} element={<Tasks
+              projectTasks={projectTasks}
+              setProjectTasks={setProjectTasks}
+              checkCompleted={checkCompleted}
+              addNewTask={addNewTask}
+              deleteTask={deleteTask}
+              user={user}
+              userProjects={userProjects}
+              userTasks={userTasks}/>}
+             />
+            <Route path="/login" element={<Login handleLogin={handleLogin} />} />
+            <Route path="/signup" element={<SignUp setUser={setUser} />} />
+            <Route path="/projects" element={<Projects 
+              userProjects={userProjects} 
+              projectTasks={projectTasks}
+              projects={userProjects}
+              setProjects={setUserProjects}
+              projectStates={projectStates} // Pass the project state object as a prop
+              setProjectStates={setProjectStates}
+              user={user} // Pass the setter function for the project state object as a prop
+              userTasks={userTasks}/>} 
+            />
         </Routes>
         )}
       </header>

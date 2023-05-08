@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import { TaskCard } from './TaskCard';
 import { TaskForm } from './TaskForm';
 import { useLocation } from 'react-router-dom';
+import { WhenAuth } from './WhenAuth';
 
 
 export function Tasks({ userProjects, deleteTask, user, userTasks, checkCompleted, addNewTask, setProjectTasks, projectTasks }) {  
@@ -38,14 +39,16 @@ export function Tasks({ userProjects, deleteTask, user, userTasks, checkComplete
   });
   
   return (
-    <div>
-      <h1> My Tasks for {projectName}
-        <button 
-          onClick={seeTaskForm}
-        >+</button>
-        {showForm ? (<TaskForm key={1} projectId={projectId} addNewTask={addNewTask} user={user}/>) : null}
-      </h1>
-      <ul>{taskComponents}</ul>
-    </div>
+    <WhenAuth>
+      <div class="mt-28 font-sans font-xl ">
+        <h1 className='text-center'> My Tasks for {projectName}
+          <button 
+            onClick={seeTaskForm}
+          >+</button>
+          {showForm ? (<TaskForm key={1} projectId={projectId} addNewTask={addNewTask} user={user}/>) : null}
+        </h1>
+        <ul>{taskComponents}</ul>
+      </div>
+    </WhenAuth>
   );
 }

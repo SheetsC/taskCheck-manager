@@ -7,7 +7,10 @@ from flask_restful import Resource
 from config import app, db, api, bcrypt
 from models import User, Task, Project
 
-
+# @app.before_request
+# def check_if_logged_in():
+#     if not session.get('user_id'):
+#         return {'error': 'Unauthorized, Please log in'}, 401
 class Home(Resource):
     def get(self):
         return {'message': '200: Welcome to our Home Page'}, 200
@@ -70,7 +73,7 @@ class Logout(Resource):
         # username = request.get_json().get('username')
         # user = Fan.query.filter(Fan.username == username).first()
         # flash(f"You have been logged out! See you again, {username}")
-        user = User.query.filter(User.id == session['user_id']).first()
+        user = User.query.filter(User.id == session.get('user_id')).first()
         user.logged_in = False
         db.session.commit()
         session.pop("user_id", None)
@@ -81,7 +84,7 @@ class CheckSession(Resource):
 
     def get(self):
 
-        user_id = session['user_id']
+        user_id = session.get('user_id')
         if user_id:
             user = User.query.filter(User.id == user_id).first()
             return user.to_dict(), 200
@@ -119,7 +122,7 @@ class Tasks(Resource):
 
         except Exception as e:
             db.session.rollback()
-            return make_response({'error': f'{repr(e)}'}, 422)
+            return make_response({'error': f'{repr(e)} using the frontend would be easier'}, 422)
 class TasksById(Resource):
      
      def get (self,id):
@@ -158,7 +161,7 @@ class Users(Resource):
             return make_response(u_list, 200)
         return make_response({'error':'not found'},404)
     def post(self):
-        data = request.get_json
+        data = request.get_json()
         new_user = User(
             name = data['name'],
             username = data['username'],
@@ -169,20 +172,8 @@ class Users(Resource):
 
         except Exception as e:
             db.session.rollback()
-            return make_response({'error': f'{repr(e)}'}, 422)
+            return make_response({'error': f'{repr(e)} please create user via sign-up'}, 422)
 
-    
-# class UsersById(Resource):
-#     def get(self, id):
-#             for u in User.query.filter_by(id=id).all():
-#                 unique_projects = [p for p in u.projects.filter()]
-#                 u_dict= {
-#                     "name": u.name,
-#                     "username" : u.username,
-#                     "logged_in": u.logged_in,
-#                     "projects": [p.to_dict() for p in unique_projects]
-#                 }
-#                 return make_response(u_dict, 200)
 class UsersById(Resource):
     def get(self, id):
         user = User.query.filter_by(id=id).first()

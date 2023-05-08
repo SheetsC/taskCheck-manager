@@ -18,38 +18,28 @@ function Navbar({ user, setUser, onLogout }) {
   }, [location]);
 
   return (
-    <header className="bg-slate-900 fixed w-full z-10 top-0">
+    <header className=" fixed w-full z-10 text-violet-500 top-0">
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8">
         <div className="hidden lg:flex lg:gap-x-12">
-          <h1 className="NavLink" to="/" end>
-            TaskCheck Manager
-          </h1>
-          <NavLink className="NavLink" to="./" end>
-            Home <FontAwesomeIcon icon="fa-solid fa-house" />
-          </NavLink>
           {user ? (
-            <Link className="NavLink" to="/projects">
-              Projects <FontAwesomeIcon icon="fa-solid fa-address-card" />
+            <Link className="NavLink font-color" to="/projects">
+              Projects 
             </Link>
           ) : (
-            <Link className="NavLink" to="/login">
-              Profile <FontAwesomeIcon icon="fa-solid fa-address-card" />
+            <Link className="NavLink" to="/">
+              Home
             </Link>
           )}
         </div>
         {user ? (
           <div className="flex justify-between gap-x-6">
-            <p className="logout">
-              <FontAwesomeIcon icon="fa-solid fa-poo" /> Welcome, {user?.name}!
-            </p>
-            <Link className="logoutbtn" to="/login" onClick={onLogout}>
-              Logout <FontAwesomeIcon icon="fa-solid fa-power-off" />
+
+            <Link className="logoutbtn" to="/" onClick={onLogout}>
+              Logout 
             </Link>
           </div>
         ) : (
-          <Link className="NavLogin" to="/login">
-            Login <FontAwesomeIcon icon="fa-solid fa-users" />
-          </Link>
+          null
         )}
         <button onClick={handleNav} className="text-white block md:hidden">
           <SlMenu size={20} />
