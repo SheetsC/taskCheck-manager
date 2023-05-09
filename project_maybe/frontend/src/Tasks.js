@@ -7,10 +7,14 @@ import { WhenAuth } from './WhenAuth';
 
 export function Tasks({ userProjects, deleteTask, user, userTasks, checkCompleted, addNewTask, setProjectTasks, projectTasks }) {  
   const location = useLocation();
-  const projectId = 
-  location.state.projectId;
+  let projectId = parseInt("0")
+  if (location && location.state){
+    projectId = location.state.projectId
+  }
+  
   // const user = JSON.parse(location.state.user);
-  const project = userProjects.filter(project => project.id === projectId)
+  console.log(projectId);
+  const project = userProjects.filter(project => project.id === projectId )
   const projectName=project.map(project=>{return project.name})
   const filteredTasks = userTasks.filter(task => task.project_id === projectId && task.user_id === user.id) ;
   // rest of the component code
