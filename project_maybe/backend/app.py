@@ -1,16 +1,22 @@
 from flask import Flask, make_response, jsonify, request, session, flash
 from flask_restful import Resource
+import datetime
 
 
 
-# Local imports
 from config import app, db, api, bcrypt
 from models import User, Task, Project
 
-# @app.before_request
-# def check_if_logged_in():
-#     if not session.get('user_id'):
-#         return {'error': 'Unauthorized, Please log in'}, 401
+NO_AUTH_ENDPOINTS = ['login', 'signup','check_session']
+
+@app.before_request
+def check_if_logged_in():
+
+    if request.endpoint in NO_AUTH_ENDPOINTS:
+        return None
+  
+    if not session.get('user_id'):
+        return {'error': 'Unauthorized, Please log in'}, 401
 class Home(Resource):
     def get(self):
         return {'message': '200: Welcome to our Home Page'}, 200
@@ -20,12 +26,15 @@ class SignUp(Resource):
         password = request.json['password']
         name = request.json['name']
         username = request.json['username']
-        
+
+        special_characters = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '{', '}', '[', ']', '|', '\\', ';', ':', "\'",',','.', '<', '>', '/', '?']
+        if len(password) < 8 and not any(char in special_characters for char in password):
+            return jsonify({"error": "Try again, no hint provided"}), 400
 
         user_exists = User.query.filter(User.username == username).first() is not None
 
         if user_exists:
-            return jsonify({"error": "User already exists"}), 409
+            return jsonify({"error": "Username already in-use"}), 409
 
         hashed_password = bcrypt.generate_password_hash(password)
         new_user = User(
@@ -298,24 +307,34 @@ class TaskByProjectId (Resource):
         if 'user_id' in session:
             data = request.get_json()
 
-            new_task = Task(
-                description = data['description'],
-                due_date = data['due_date'],
-                status = data['status'],
-                complete = False,
-                project_id = id,
-                user_id = data['user_id'],
+            description = data['description']
+            status = data['status']
+            complete = False
+            project_id = id
+            user_id = data['user_id']
 
+            # Validate due date format
+            try:
+                due_date = datetime.datetime.strptime(data['due_date'], '%Y-%m-%d').date()
+            except ValueError:
+                return make_response({'error': 'Invalid due date format. Please use the format: YYYY-MM-DD'}, 422)
+
+            new_task = Task(
+                description=description,
+                due_date=due_date,
+                status=status,
+                complete=complete,
+                project_id=project_id,
+                user_id=user_id
             )
-            # import ipdb; ipdb.set_trace()
+
             try:
                 db.session.add(new_task)
                 db.session.commit()
-                
             except:
                 db.session.rollback()
-                return make_response({'error': f'mew'}, 422)
-            return make_response(new_task.to_dict(), 201)
+                return make_response({'error': 'Failed to create new task.'}, 422)
+        return make_response(new_task.to_dict(), 201)
 class TasksByUserId(Resource):
     def get(self, id):
         

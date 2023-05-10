@@ -153,7 +153,7 @@ export function App() {
           <p>Loading...</p>
         ) : (
           <Routes>
-            <Route path= "/" element={<Home/>} />
+            <Route path= "/" element={<Home user={user} userTasks={userTasks}/>} />
             <Route path={`/tasks`} element={<Tasks
               projectTasks={projectTasks}
               setProjectTasks={setProjectTasks}
@@ -177,8 +177,17 @@ export function App() {
               userTasks={userTasks}/>} 
             />
         </Routes>
+
         )}
       </header>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+
     </div>
   );
 }

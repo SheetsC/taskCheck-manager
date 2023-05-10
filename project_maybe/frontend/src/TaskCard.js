@@ -11,7 +11,7 @@ export function TaskCard({
   due_date,
   complete,
   checkCompleted,
-  projectTasks,
+  index
 }) {
   const [isComplete, setIsComplete] = useState(complete);
 
@@ -79,21 +79,22 @@ export function TaskCard({
   console.log(otherUserTasks);
   console.log(userProjects);
   return (
-    <li class="mt-20 text-base mx-auto rounded-full bg-emerald-500 block max-w-2xl">
-      <div className="flex flex-col gap-3">
-        <div className="font-sans font-bold">Task:{description}</div>
-        <div> Due: {due_date}</div>
-        <div className="flex gap-3 items-center">
-          <input
-            type="checkbox"
-            checked={isComplete}
-            onChange={toggleComplete}
-          />{" "}
-          {isComplete ? "complete" : "not done yet"}
-        </div>
+    <li className={`max-w-xs mt-20 cursor-pointer select-none text-base mx-auto rounded-2xl block p-4 hover:shadow-lg ${isComplete ? 'bg-green-500' : 'bg-blue-500 hover:bg-emerald-600'}`}>
+  <div className="flex flex-col gap-3">
+    <div className="font-sans font-bold">Task {index}: {description}</div>
+    <div className="text-sm">Due: {due_date}</div>
+    <div className="flex gap-3 items-center">
+      <input
+        type="checkbox"
+        checked={isComplete}
+        onChange={toggleComplete}
+        className="form-checkbox h-5 w-5 text-emerald-600"
+      />
+      <span className="text-sm font-medium">{isComplete ? "Complete" : "Not done yet"}</span>
+    </div>
 
-        <button onClick={handleDelete}>X</button>
-      </div>
-    </li>
+    <button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full">Delete</button>
+  </div>
+</li>
   );
 }

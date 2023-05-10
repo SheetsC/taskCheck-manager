@@ -18,7 +18,7 @@ function Navbar({ user, setUser, onLogout }) {
   }, [location]);
 
   return (
-    <header className=" fixed w-full z-10 text-violet-500 top-0">
+    <header className=" flex w-full cursor-default select-none z-10 text-violet-500 top-0">
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8">
         <div className="hidden lg:flex lg:gap-x-12">
           {user ? (
@@ -31,6 +31,11 @@ function Navbar({ user, setUser, onLogout }) {
             </Link>
           )}
         </div>
+       {user? (<div>
+        <Link className="NavLink" to="/">
+              Home
+            </Link>
+       </div>):(null)}
         {user ? (
           <div className="flex justify-between gap-x-6">
 
