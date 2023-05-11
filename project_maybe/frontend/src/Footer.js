@@ -2,7 +2,7 @@ import React from 'react'
 
 export function Footer() {
   return (
-    <footer className="bg-gray-800 py-8 max-h-48 rounded-t-lg overflow-y-auto scroll-smooth">
+    <footer className="bg-gray-800 py-8 max-h-48 z-15 rounded-t-lg overflow-y-auto scroll-smooth">
   <div className="container mx-auto px-11">
     <div className="flex flex-wrap justify-between">
       <div className="w-full lg:w-1/4 mb-0 lg:mb-0">

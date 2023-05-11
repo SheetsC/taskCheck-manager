@@ -24,8 +24,8 @@ export function Home({ user, userTasks }) {
 
   return (
     user ?(
-      <div className='text-center cursor-default select-none font-sans text-xl'>
-        <h1>Hello, {user.name}. Days with tasks have been marked.<br/> Navigate to Projects to see which ones need work.</h1>
+      <div className='text-center my-6 cursor-default select-none font-sans text-xl'>
+        <h1>Hello, {user.name}. Days with tasks due have been marked.<br/> Navigate to Projects to see which ones need work.</h1>
         <MyCalendar user={user} userTasks={userTasks}/>
       </div>
     ) :

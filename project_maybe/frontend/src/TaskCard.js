@@ -74,12 +74,8 @@ export function TaskCard({
       method: "DELETE",
     });
   };
-  const [otherUserTasks, setOtherUserTasks] = useState([]);
-
-  console.log(otherUserTasks);
-  console.log(userProjects);
   return (
-    <li className={`max-w-xs mt-20 cursor-pointer select-none text-base mx-auto rounded-2xl block p-4 hover:shadow-lg ${isComplete ? 'bg-green-500' : 'bg-blue-500 hover:bg-emerald-600'}`}>
+    <li className={`max-w-xs mt-20 cursor-pointer select-none text-base mx-auto rounded-2xl block p-4 hover:shadow-xl ${isComplete ? 'bg-green-500' : 'bg-blue-500 hover:bg-emerald-600'}`}>
   <div className="flex flex-col gap-3">
     <div className="font-sans font-bold">Task {index}: {description}</div>
     <div className="text-sm">Due: {due_date}</div>

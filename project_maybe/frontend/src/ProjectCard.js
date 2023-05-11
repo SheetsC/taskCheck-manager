@@ -40,7 +40,11 @@ export function ProjectCard({ project, user, tasks }) {
   })
 
   return (
-    <div className={`mt-28 max-w-2xl mx-auto px-6 py-8 lg:px-8 rounded-full block ${allTasksComplete ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-emerald-600' }`} onClick={handleClick}>
+    <div 
+      className={`mt-28 max-w-xl select-none max-h-lg mx-40 px-6 py-8 rounded-full block ${allTasksComplete ? 'bg-green-500 hover:bg-green-600 shadow-3xl  focus:ring-2 focus:ring-green-500' : 'bg-blue-500 hover:bg-emerald-600 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500' }`} 
+      onClick={handleClick}
+    >
+
     <h3 className="text-2xl text-center font-bold mb-4" key={project.id}>
       Project: {project.name}
     </h3>
