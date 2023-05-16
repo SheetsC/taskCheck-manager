@@ -5,9 +5,9 @@ import datetime
 
 
 from config import app, db, api, bcrypt
-from models import User, Task, Project
+from models import User, Task, Project, Client
 
-NO_AUTH_ENDPOINTS = ['login', 'signup','check_session']
+NO_AUTH_ENDPOINTS = ['login','client_signup', 'user_signup','check_session']
 
 @app.before_request
 def check_if_logged_in():
@@ -21,7 +21,34 @@ class Home(Resource):
     def get(self):
         return {'message': '200: Welcome to our Home Page'}, 200
     
-class SignUp(Resource):
+class ClientSignUp(Resource):
+    def post(self):
+        password = request.json['password']
+        name = request.json['name']
+        company = request.json['company']
+
+        special_characters = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '{', '}', '[', ']', '|', '\\', ';', ':', "\'",',','.', '<', '>', '/', '?']
+        if len(password) < 8 and not any(char in special_characters for char in password):
+            return jsonify({"error": "Try again, no hint provided"}), 400
+
+        client_exists= Client.query.fitler(Client.name == name and Client.company == company).first() is not None
+
+        if client_exists:
+            return jsonify({"error": "Client already exists"}), 409
+
+        hashed_password = bcrypt.generate_password_hash(password)
+        new_client = Client(
+            name=name,
+            company=company,
+            _password_hash=hashed_password
+        )
+        db.session.add(new_client)
+        db.session.commit()
+        return jsonify({
+            "id": new_client.id,
+            "username": new_client.username
+        })
+class UserSignUp(Resource):
     def post(self):
         password = request.json['password']
         name = request.json['name']
@@ -36,6 +63,7 @@ class SignUp(Resource):
         if user_exists:
             return jsonify({"error": "Username already in-use"}), 409
 
+
         hashed_password = bcrypt.generate_password_hash(password)
         new_user = User(
             name= name,
@@ -49,33 +77,50 @@ class SignUp(Resource):
             "username": new_user.username
         })
 
-class Login(Resource):
+from flask import session
 
+class Login(Resource):
     def post(self):
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
-        user = User.query.filter(User.username == username).first()
 
-        # password = request.get_json()['password']
+        user = User.query.filter_by(username=username).first()
+        client = Client.query.filter_by(name=username).first()
 
-        # if user.authenticate(password):
-        if user is None:
+        if user:
+            # Handle user login logic
+            if not bcrypt.check_password_hash(user._password_hash, password):
+                return {'error': 'Invalid username or password'}, 401
+            user.logged_in = True
+            db.session.commit()
+            session.permanent = True
+            session['user_id'] = user.id
+
+            return jsonify({
+                "id": user.id,
+                "username": user.username,
+                "user_type": "user"
+            })
+
+        elif client:
+            # Handle client login logic
+            if not bcrypt.check_password_hash(client._password_hash, password):
+                return {'error': 'Invalid username or password'}, 401
+            client.logged_in = True
+            db.session.commit()
+            session.permanent = True
+            session['client_id'] = client.id
+
+            return jsonify({
+                "id": client.id,
+                "name": client.name,
+                "user_type": "client"
+            })
+
+        else:
             return {'error': 'Invalid username or password'}, 401
-        if not bcrypt.check_password_hash(user._password_hash, password):
-            return {'error': 'Invalid username or password'}, 401
 
-        flash("Login Successful!")
-    
-        user.logged_in = True
-        db.session.commit()
-        session.permanent = True
-        session['user_id'] = user.id
-        return jsonify({
-            "id": user.id,
-            "username": user.username,
-            
-        })
 class Logout(Resource):
 
     def delete(self):
@@ -83,9 +128,15 @@ class Logout(Resource):
         # user = Fan.query.filter(Fan.username == username).first()
         # flash(f"You have been logged out! See you again, {username}")
         user = User.query.filter(User.id == session.get('user_id')).first()
-        user.logged_in = False
-        db.session.commit()
-        session.pop("user_id", None)
+        client = Client.filter(Client.id == session.get('client_id')).first()
+        if user:
+            user.logged_in = False
+            db.session.commit()
+            session.pop("user_id", None)
+        elif client:
+            client.logged_in = False
+            db.session.commit()
+            session.pop("client_id", None)
         
         return {}, 204
 
@@ -94,10 +145,14 @@ class CheckSession(Resource):
     def get(self):
 
         user_id = session.get('user_id')
+        client_id = session.get('client_id')
+
         if user_id:
             user = User.query.filter(User.id == user_id).first()
             return user.to_dict(), 200
-
+        elif client_id:
+            client = Client.query.filter(Client.id == client_id).first()
+            return client.to_dict(), 200
         return {}, 401
 
 class ClearSession(Resource):
@@ -106,6 +161,7 @@ class ClearSession(Resource):
 
         # session['page_views'] = None
         session['user_id'] = None
+        session['client_id'] = None
 
         return {}, 204
 
@@ -207,6 +263,26 @@ class UsersById(Resource):
             return make_response("no user found", 404)
          db.session.delete(u)
          db.session.commit()
+
+class Clients(Resource):
+    def get(self):
+        c_list = [c.to_dict() for c in Client.query.all()]
+        if c_list:
+            return make_response(c_list, 200)
+        return make_response({'error':'not found'},404)
+    def post(self):
+        data = request.get_json()
+        new_client = Client(
+            name = data['name'],
+            company = data['company'],
+        )
+        try:
+            db.session.add(new_client)
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            return make_response({'error': f'{repr(e)} please create Client via sign-up'}, 422)
             
 class Projects(Resource):
     def get(self):
@@ -358,7 +434,8 @@ api.add_resource(Projects, '/projects')
 api.add_resource(ProjectsById, '/projects/<int:id>')
 api.add_resource(ProjectsByUserId, '/users/<int:id>/projects')
 api.add_resource(ClearSession, '/clear', endpoint='clear')
-api.add_resource(SignUp, '/signup', endpoint='signup')
+api.add_resource(UserSignUp, '/users/signup', endpoint='user_signup')
+api.add_resource(ClientSignUp, '/clients/signup', endpoint='client_signup')
 api.add_resource(Login, '/login', endpoint='login')
 api.add_resource(Logout, '/logout', endpoint='logout')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')

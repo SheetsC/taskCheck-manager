@@ -11,10 +11,10 @@ function MyCalendar({user, userTasks}) {
 
   // Function to check if a date has a task due
   function hasTaskDue(date) {
-    return userTasks.some(task => task.due_date === date.toISOString().slice(0, 10) && task.complete !== true);
+    return userTasks.some(task => task.due_date === date.toISOString().slice(0, 10) && task.complete !== true && task.user_id === user.id);
   }
   function didTaskDue(date) {
-    return userTasks.some(task => task.due_date === date.toISOString().slice(0, 10) && task.complete === true);
+    return userTasks.some(task => task.due_date === date.toISOString().slice(0, 10) && task.complete === true && task.user_id === user.id);
   }
 
 
@@ -40,15 +40,15 @@ function MyCalendar({user, userTasks}) {
   return (
     <div className='mx-auto my-auto z-3'>
         <div className='my-3'>
-            <h2 className="text-3xl text-center my-19 font-semibold mb-4">My Calendar</h2>
+            <h2 className="text-3xl  text-violet-500 text-center my-19 font-semibold mb-4">My Calendar</h2>
             <div className="mx-auto items-center p-4 rounded-lg shadow-md">
                 <Calendar
                     onChange={handleDateChange}
                     value={date}
                     tileContent={tileContent}
-                    className="text-gray-500 mx-auto z-1 rounded-lg font-sans bg-black !important"
-                    prevLabel={<i className="fas fa-chevron-left"></i>}
-                    nextLabel={<i className="fas fa-chevron-right"></i>}   
+                    className="text-gray-500 mx-auto z-1 rounded-lg font-sans bg-slate-800 !important"
+                    // prevLabel={<i className="fas fa-chevron-left"></i>}
+                    // nextLabel={<i className="fas fa-chevron-right"></i>}   
                 />
       </div></div>
       

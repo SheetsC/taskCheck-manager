@@ -41,7 +41,7 @@ export function ProjectCard({ project, user, tasks }) {
 
   return (
     <div 
-      className={`mt-28 max-w-xl select-none max-h-lg mx-40 px-6 py-8 rounded-full block ${allTasksComplete ? 'bg-green-500 hover:bg-green-600 shadow-3xl  focus:ring-2 focus:ring-green-500' : 'bg-blue-500 hover:bg-emerald-600 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500' }`} 
+      className={`mt-28 max-w-xl select-none coursor-pointer max-h-lg mx-40 px-6 py-8 rounded-full block ${allTasksComplete ? 'bg-green-500 hover:bg-green-600 shadow-3xl  focus:ring-2 focus:ring-green-500' : 'bg-blue-500 hover:bg-emerald-600 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500' }`} 
       onClick={handleClick}
     >
 

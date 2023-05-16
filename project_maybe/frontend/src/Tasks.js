@@ -68,12 +68,18 @@ export function Tasks({ userProjects, deleteTask, user, userTasks, checkComplete
   useEffect(() => {
     localStorage.setItem('notes', content);
   }, [content]);
+
+  useEffect(() => {
+    setContent('')
+    localStorage.getItem('notes', content)
+    setContent(content);
+  },[user?.id])
   
   
   return(
     user ? 
     (<div className="font-sans sticky top-0 z-10 position-fixed">
-      <div className="text-center coursor-default select-none mx-11 font-sans rounded-full mt-4 text-4xl  bg-emerald-500 py-4 text-white">
+      <div className="text-center coursor-default select-none mx-11 font-sans rounded-full mt-4 text-4xl  bg-pink-800 py-4 text-white">
         My Tasks for {projectName}
       </div>
       <div className="font-sans font-xl mt-10">
@@ -84,7 +90,7 @@ export function Tasks({ userProjects, deleteTask, user, userTasks, checkComplete
         <div className='flex'>     
         <ul className="grid grid-cols-4 mx-20 scroll-smooth">{taskComponents}</ul>
         
-        <ReactQuill value={content} onChange={handleChange} className='relative mt-10 right-20'/>
+        <ReactQuill value={content} onChange={handleChange} className='relative text-gray-100 font-sans rounded-lg bg-black mt-20 right-10'/>
         </div>
       </div>
     </div>): (<div className="mt-28 rounded-sm max-w-2xl flex flex-col mx-auto gap-3">

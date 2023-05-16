@@ -17,7 +17,8 @@ class Task(db.Model, SerializerMixin):
     complete = db.Column(db.Boolean, default= False)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    
+    client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
+
     
 
 class User(db.Model, SerializerMixin):
@@ -32,6 +33,8 @@ class User(db.Model, SerializerMixin):
 
     tasks = db.relationship('Task', backref='user', cascade='all, delete-orphan')
     projects = association_proxy('tasks', 'project')
+    client = association_proxy('tasks', 'client')
+
 
     @hybrid_property
     def password_hash(self):
@@ -72,6 +75,7 @@ class Project(db.Model, SerializerMixin):
 
     tasks = db.relationship('Task', backref='project', cascade='all, delete-orphan')
     users = association_proxy('tasks', 'user')
+    clients = association_proxy('tasks', 'client')
     
     @property
     def unique_users(self):
@@ -94,4 +98,41 @@ class Project(db.Model, SerializerMixin):
         return budget
     
 
+class Client(db.Model, SerializerMixin):
+    __tablename__ = 'clients'
+    # serialize_rules = (,)
 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False, unique=True)
+    company = db.Column(db.String, nullable=False)
+    logged_on = db.Column(db.Boolean, default= False)
+    _password_hash = db.Column(db.String, nullable=False)
+
+    tasks = db.relationship('Task', backref='user', cascade='all, delete-orphan')
+    projects = association_proxy('tasks', 'project')
+    users = association_proxy('tasks', 'user')
+    
+
+    @hybrid_property
+    def password_hash(self):
+        raise Exception('Password hashes may not be viewed.')
+    # add @validate to backend for username, and other potential issues
+    @password_hash.setter
+    def password_hash(self, password):
+        password_hash = bcrypt.generate_password_hash(
+            password.encode('utf-8'))
+        self._password_hash = password_hash.decode('utf-8')
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(
+            self._password_hash, password.encode('utf-8'))
+
+    @staticmethod
+    def simple_hash(input):
+        return sum(bytearray(input, encoding='utf-8'))
+    
+    @validates('username')
+    def validate_username(self, key, username):
+        if len(username) < 5:
+            raise ValueError("Username must be at least 3 characters long.")
+        return username
