@@ -11,7 +11,7 @@ class Task(db.Model, SerializerMixin):
     serialize_rules = ('-users', '-projects', '-user', '-project')
 
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.Text, nullable=False, unique=True)
+    description = db.Column(db.Text, nullable=False)
     due_date = db.Column(db.String, nullable=False)
     status = db.Column(db.String())
     complete = db.Column(db.Boolean, default= False)
@@ -19,7 +19,14 @@ class Task(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
 
-    
+    @validates('description')
+    def validates_name(self, key, description):
+            existing_task = self.query.filter_by(description=description).first()
+            if existing_task:
+                raise ValueError('task name must be unique.')
+
+            return description
+
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
@@ -55,9 +62,15 @@ class User(db.Model, SerializerMixin):
         return sum(bytearray(input, encoding='utf-8'))
     
     @validates('username')
-    def validate_username(self, key, username):
-        if len(username) < 5:
-            raise ValueError("Username must be at least 3 characters long.")
+    def validates_name(self, key, username):
+        if len(username) != 5:
+            raise ValueError(f'Project username must be 5 characters long. {5 - len(name)} more characters are needed.')
+
+    
+        existing_user = self.query.filter_by(username=username).first()
+        if existing_user:
+            raise ValueError('User name must be unique.')
+
         return username
 
 
@@ -65,9 +78,9 @@ class Project(db.Model, SerializerMixin):
     __tablename__ = 'projects' 
     serialize_rules=('tasks', '-users' )
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False, unique=True)
+    name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
-    budget = db.Column(db.Float, nullable= False)
+    budget = db.Column(db.Float)
     start_date = db.Column(db.DateTime, default=datetime.utcnow)
     end_date = db.Column(db.String())
     status = db.Column(db.String(255))
@@ -88,8 +101,15 @@ class Project(db.Model, SerializerMixin):
     @validates('name')
     def validates_name(self, key, name):
         if len(name) != 5:
-            raise ValueError('Project name must be longer needs {len(name)} - 5} more ')
+            raise ValueError(f'Project name must be 5 characters long. {5 - len(name)} more characters are needed.')
+
+    
+        existing_project = self.query.filter_by(name=name).first()
+        if existing_project:
+            raise ValueError('Project name must be unique.')
+
         return name
+
     
     @validates('budget')
     def validate_budget(self, key, budget):
@@ -103,12 +123,12 @@ class Client(db.Model, SerializerMixin):
     # serialize_rules = (,)
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, nullable=False, unique=True)
+    name = db.Column(db.Text, nullable=False)
     company = db.Column(db.String, nullable=False)
     logged_on = db.Column(db.Boolean, default= False)
     _password_hash = db.Column(db.String, nullable=False)
 
-    tasks = db.relationship('Task', backref='user', cascade='all, delete-orphan')
+    tasks = db.relationship('Task', backref='client', cascade='all, delete-orphan')
     projects = association_proxy('tasks', 'project')
     users = association_proxy('tasks', 'user')
     
@@ -131,8 +151,11 @@ class Client(db.Model, SerializerMixin):
     def simple_hash(input):
         return sum(bytearray(input, encoding='utf-8'))
     
-    @validates('username')
-    def validate_username(self, key, username):
-        if len(username) < 5:
-            raise ValueError("Username must be at least 3 characters long.")
-        return username
+    @validates('client')
+    def validates_name(self, key, name, company):    
+        existing_client = self.query.filter(name == name and company ==company).first()
+        if existing_client:
+            raise ValueError('Client name must be unique.')
+
+        return name
+    

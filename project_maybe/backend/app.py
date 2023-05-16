@@ -15,7 +15,7 @@ def check_if_logged_in():
     if request.endpoint in NO_AUTH_ENDPOINTS:
         return None
   
-    if not session.get('user_id'):
+    if not session.get('user_id') or session.get('client_id'):
         return {'error': 'Unauthorized, Please log in'}, 401
 class Home(Resource):
     def get(self):
@@ -31,7 +31,7 @@ class ClientSignUp(Resource):
         if len(password) < 8 and not any(char in special_characters for char in password):
             return jsonify({"error": "Try again, no hint provided"}), 400
 
-        client_exists= Client.query.fitler(Client.name == name and Client.company == company).first() is not None
+        client_exists= Client.query.filter(Client.name == name and Client.company == company).first() is not None
 
         if client_exists:
             return jsonify({"error": "Client already exists"}), 409
@@ -46,7 +46,8 @@ class ClientSignUp(Resource):
         db.session.commit()
         return jsonify({
             "id": new_client.id,
-            "username": new_client.username
+            "name": new_client.name,
+            "company": new_client.company
         })
 class UserSignUp(Resource):
     def post(self):
@@ -128,7 +129,7 @@ class Logout(Resource):
         # user = Fan.query.filter(Fan.username == username).first()
         # flash(f"You have been logged out! See you again, {username}")
         user = User.query.filter(User.id == session.get('user_id')).first()
-        client = Client.filter(Client.id == session.get('client_id')).first()
+        client = Client.query.filter(Client.id == session.get('client_id')).first()
         if user:
             user.logged_in = False
             db.session.commit()
