@@ -76,7 +76,7 @@ class User(db.Model, SerializerMixin):
 
 class Project(db.Model, SerializerMixin):
     __tablename__ = 'projects' 
-    serialize_rules=('tasks', '-users', 'clients' )
+    serialize_rules=('tasks', '-users', '-clients' )
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
@@ -129,12 +129,24 @@ class Client(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     company = db.Column(db.String, nullable=False)
-    logged_on = db.Column(db.Boolean, default= False)
+    logged_in = db.Column(db.Boolean, default= False)
     _password_hash = db.Column(db.String, nullable=False)
 
     tasks = db.relationship('Task', backref='client', cascade='all, delete-orphan')
     projects = association_proxy('tasks', 'project')
     users = association_proxy('tasks', 'user')
+
+    @property
+    def unique_projects(self):
+        return list(set(self.projects))
+    
+    @property
+    def unique_users(self):
+        return list(set(self.users))
+
+    @property
+    def unique_tasks(self):
+        return list(set(self.tasks))
     
 
     @hybrid_property

@@ -262,7 +262,7 @@ class UsersById(Resource):
          u = User.query.filter_by(id=id).first()
          if u == None:
             return make_response("no user found", 404)
-         db.session.delete(u)
+         db.session.delete()
          db.session.commit()
 
 class Clients(Resource):
@@ -284,6 +284,31 @@ class Clients(Resource):
         except Exception as e:
             db.session.rollback()
             return make_response({'error': f'{repr(e)} please create Client via sign-up'}, 422)
+
+class ClientsById(Resource):
+    def get(self, id):
+        clients_list = []
+        for c in Client.query.filter(id==id).all():
+            c_dict = {
+                'id' : c.id,
+                'name' : c.name,
+                'company' : c.company,
+                'logged_in' : c.logged_in,
+                'users' : [u.to_dict() for u in c.unique_users],
+                'projects' : [p.to_dict() for p in c.unique_projects],
+                'tasks' : [t.to_dict() for t in c.unique_tasks]
+            }       
+            clients_list.append(c_dict)
+        if clients_list == None:
+            return make_response({'error': 'user has no tasks'}, 404)
+        return make_response(clients_list, 200)
+    def delete(self, id):
+         c = Client.query.filter_by(id=id).all()
+         if c == None:
+            return make_response("no client found", 404)
+         db.session.delete()
+         db.session.commit()
+
             
 class Projects(Resource):
     def get(self):
@@ -433,6 +458,7 @@ api.add_resource(TaskByProjectId, '/projects/<int:id>/tasks')
 api.add_resource(Users, '/users')
 api.add_resource(UsersById, '/users/<int:id>')
 api.add_resource(Clients, '/clients')
+api.add_resource(ClientsById, '/clients/<int:id>')
 api.add_resource(Projects, '/projects')
 api.add_resource(ProjectsById, '/projects/<int:id>')
 api.add_resource(ProjectsByUserId, '/users/<int:id>/projects')
