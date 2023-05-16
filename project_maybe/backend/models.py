@@ -8,7 +8,7 @@ from sqlalchemy.orm import validates
 
 class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
-    serialize_rules = ('-users', '-projects', '-user', '-project')
+    serialize_rules = ('-users', '-projects', '-clients','-user', '-project', '-client')
 
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text, nullable=False)
@@ -31,7 +31,7 @@ class Task(db.Model, SerializerMixin):
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
     # serialize_rules = ('-tasks.user,description,due_date,complete',)
-    serialize_rules = ('-tasks','-projects', '-_password_hash', )
+    serialize_rules = ('-tasks','-projects', '-_password_hash', '-clients')
     id = db.Column(db.Integer, primary_key= True )
     logged_in = db.Column(db.Boolean, default= False)
     name = db.Column(db.String, nullable=False)
@@ -40,7 +40,7 @@ class User(db.Model, SerializerMixin):
 
     tasks = db.relationship('Task', backref='user', cascade='all, delete-orphan')
     projects = association_proxy('tasks', 'project')
-    client = association_proxy('tasks', 'client')
+    clients = association_proxy('tasks', 'client')
 
 
     @hybrid_property
@@ -76,7 +76,7 @@ class User(db.Model, SerializerMixin):
 
 class Project(db.Model, SerializerMixin):
     __tablename__ = 'projects' 
-    serialize_rules=('tasks', '-users' )
+    serialize_rules=('tasks', '-users', 'clients' )
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
@@ -89,6 +89,10 @@ class Project(db.Model, SerializerMixin):
     tasks = db.relationship('Task', backref='project', cascade='all, delete-orphan')
     users = association_proxy('tasks', 'user')
     clients = association_proxy('tasks', 'client')
+    
+    @property
+    def unique_clients(self):
+        return list(set(self.clients))
     
     @property
     def unique_users(self):
@@ -120,7 +124,7 @@ class Project(db.Model, SerializerMixin):
 
 class Client(db.Model, SerializerMixin):
     __tablename__ = 'clients'
-    # serialize_rules = (,)
+    serialize_rules = ('-tasks','-projects', '-users', '-_password_hash')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)

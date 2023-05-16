@@ -324,7 +324,8 @@ class ProjectsById(Resource):
                 'status' : p.status,
                 'complete' : p.complete,
                 'users': [u.to_dict() for u in p.unique_users],
-                'tasks': [t.to_dict() for t in p.unique_tasks]
+                'tasks': [t.to_dict() for t in p.unique_tasks],
+                'client': [u.to_dict() for u in p.unique_clients]
             }       
             projects_list.append(p_dict)
         if projects_list == None:
@@ -431,6 +432,7 @@ api.add_resource(TasksByUserId, '/users/<int:id>/tasks')
 api.add_resource(TaskByProjectId, '/projects/<int:id>/tasks')
 api.add_resource(Users, '/users')
 api.add_resource(UsersById, '/users/<int:id>')
+api.add_resource(Clients, '/clients')
 api.add_resource(Projects, '/projects')
 api.add_resource(ProjectsById, '/projects/<int:id>')
 api.add_resource(ProjectsByUserId, '/users/<int:id>/projects')
