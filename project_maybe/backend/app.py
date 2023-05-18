@@ -7,7 +7,7 @@ import datetime
 from config import app, db, api, bcrypt
 from models import User, Task, Project, Client
 
-NO_AUTH_ENDPOINTS = ['login','client_signup', 'user_signup','check_session']
+NO_AUTH_ENDPOINTS = ['login','client_signup', 'user_signup','check_session','logout']
 
 @app.before_request
 def check_if_logged_in():
@@ -15,8 +15,12 @@ def check_if_logged_in():
     if request.endpoint in NO_AUTH_ENDPOINTS:
         return None
   
-    if not session.get('user_id') or session.get('client_id'):
-        return {'error': 'Unauthorized, Please log in'}, 401
+    if not session.get('user_id' ):
+       if  not session.get('client_id'):
+        return {'error': 'Unauthorized, Please log in'}, 401      
+   
+        
+
 class Home(Resource):
     def get(self):
         return {'message': '200: Welcome to our Home Page'}, 200
@@ -85,9 +89,10 @@ class Login(Resource):
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
-
+        name = data.get('name')
+        company = data.get('company')
         user = User.query.filter_by(username=username).first()
-        client = Client.query.filter_by(name=username).first()
+        client = Client.query.filter(name==name and company==company).first()
 
         if user:
             # Handle user login logic
@@ -101,7 +106,6 @@ class Login(Resource):
             return jsonify({
                 "id": user.id,
                 "username": user.username,
-                "user_type": "user"
             })
 
         elif client:
@@ -116,7 +120,7 @@ class Login(Resource):
             return jsonify({
                 "id": client.id,
                 "name": client.name,
-                "user_type": "client"
+                "company": client.company
             })
 
         else:
