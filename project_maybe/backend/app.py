@@ -291,21 +291,19 @@ class Clients(Resource):
 
 class ClientsById(Resource):
     def get(self, id):
-        clients_list = []
-        for c in Client.query.filter(id==id).all():
-            c_dict = {
-                'id' : c.id,
-                'name' : c.name,
-                'company' : c.company,
-                'logged_in' : c.logged_in,
-                'users' : [u.to_dict() for u in c.unique_users],
-                'projects' : [p.to_dict() for p in c.unique_projects],
-                'tasks' : [t.to_dict() for t in c.unique_tasks]
-            }       
-            clients_list.append(c_dict)
-        if clients_list == None:
+        c = Client.query.filter_by(id=id).first()
+        c_dict = {
+            'id' : c.id,
+            'name' : c.name,
+            'company' : c.company,
+            'logged_in' : c.logged_in,
+            'users' : [u.to_dict() for u in c.unique_users],
+            'projects' : [p.to_dict() for p in c.unique_projects],
+            'tasks' : [t.to_dict() for t in c.unique_tasks]
+        }      
+        if c == None:
             return make_response({'error': 'user has no tasks'}, 404)
-        return make_response(clients_list, 200)
+        return make_response(c_dict, 200)
     def delete(self, id):
          c = Client.query.filter_by(id=id).all()
          if c == None:
@@ -396,6 +394,11 @@ class ProjectsByUserId(Resource):
                 'end_date' : p.end_date,
                 'status' : p.status,
                 'complete' : p.complete,
+                'tasks': [t.to_dict() for t in p.unique_tasks],
+                'users': [u.to_dict() for u in p.unique_users],
+                'clients': [u.to_dict() for u in p.unique_clients],
+
+                
             }       
             projects_list.append(p_dict)
         if projects_list == None:
