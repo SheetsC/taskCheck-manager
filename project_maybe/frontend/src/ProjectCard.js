@@ -25,7 +25,7 @@ export function ProjectCard({ project, user, tasks }) {
   const allTasksComplete = tasks.every(task => task.complete);
   console.log(allTasksComplete);
   function handleClick() {
-    navigate('/tasks', { state: { projectId: project.id, user: user } });
+    navigate(`/${user?.username}/tasks`, { state: { projectId: project.id, user: user } });
   }
   const userComponents =  users.map(user =>{
     return (

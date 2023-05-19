@@ -3,8 +3,9 @@ import {Link, useNavigate} from 'react-router-dom'
 import './index.css';
 
 
-export function Login({ handleLogin }) {
-  const [username, setUsername] = useState("");
+export function ClientLogin({ handleLogin }) {
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false)
   const [isOpen, setIsOpen] = useState(false);
@@ -28,10 +29,10 @@ export function Login({ handleLogin }) {
                 "Content-Type": "application/json",
             },
         // body: JSON.stringify({ username}),
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ name, company, password }),
         }).then((r) => {
             if (r.ok) {
-                r.json().then((user) => handleLogin(user))
+                r.json().then((client) => handleLogin(client))
                 nagigate('/')
             }
             else {
@@ -47,13 +48,24 @@ export function Login({ handleLogin }) {
                     <h2 class="text-3xl font-bold cursor-default select-none tracking-tight text-violet-500 sm:text-5xl">Login</h2>
                 </div>
                 <div>
-                    <label for="username" class="block text-sm font-semibold leading-6 text-violet-500 cursor-default select-none">Username</label>
+                    <label for="name" class="block text-sm font-semibold leading-6 text-violet-500 cursor-default select-none">Name</label>
                     <input
                         type="text"
-                        name="username"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        name="name"
+                        id="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        class="block w-full rounded-full border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6"
+                    />
+                </div>
+                <div>
+                    <label for="company" class="block text-sm font-semibold leading-6 text-violet-500 cursor-default select-none">Company</label>
+                    <input
+                        type="text"
+                        name="company"
+                        id="company"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
                         class="block w-full rounded-full border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6"
                     />
                 </div>
