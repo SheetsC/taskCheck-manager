@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import './index.css';
 
 
-export function UserLogin({ handleLogin }) {
+export function UserLogin({client, user, handleLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false)
@@ -41,7 +41,8 @@ export function UserLogin({ handleLogin }) {
     }
 
     return (
-        <div >
+        user || client? (<div className='text-red-500'>WARNING. Logout before attempting to log in</div>):
+        (<div >
             <form onSubmit={handleSubmit} class="mx-auto mt-16 max-w-sm sm:mt-20">
                 <div class="mx-auto max-w-2xl text-center justify-between gap-x-6 p-6 lg:px-8">
                     <h2 class="text-3xl font-bold cursor-default select-none tracking-tight text-violet-500 sm:text-5xl">Login</h2>
@@ -93,6 +94,6 @@ export function UserLogin({ handleLogin }) {
                     </div>
                 </div>
             )}
-        </div>
+        </div>)
     );
 }

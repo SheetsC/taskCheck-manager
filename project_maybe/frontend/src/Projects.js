@@ -7,24 +7,38 @@ import MyCalendar from "./MyCalendar";
 export function Projects({
   projectStates,
   user,
-  setProjects,
-  userProjects,
-  projectTasks,
   userTasks,
+  client,
+  clientProjects
 }) {
-  const projectComponents = [];
+  const clientProjectComponents = 
+    clientProjects.map(_project => {
+      return(
+        <ProjectCard
+        key={_project.id}
+        _project={_project}
+        user={user}
+        client={client}
+      />
+      )
+    })
+    
+  const userProjectComponents = [];
   
   for (const projectId in projectStates) {
     const project = projectStates[projectId];
     const theseTasks = userTasks.filter(
       (tasks) => tasks.project_id === project.id
     );
-    projectComponents.push(
+
+    
+    userProjectComponents.push(
       <ProjectCard
         key={project.id}
         project={project}
         user={user}
         tasks={theseTasks}
+        client={client}
       />
     );
   }
@@ -39,9 +53,9 @@ export function Projects({
           <MyCalendar user={user} userTasks={userTasks} className='bg-slate-800 my-1 flex top-2 z-0'/>
         </div>
         <div><br/></div>
-        <div className="bg-scroll cursor-pointer">{projectComponents}</div>
+        <div className="bg-scroll cursor-pointer">{userProjectComponents}</div>
       </div>
-    ) : (
+    ) : client ? (<div>{clientProjectComponents}</div>): (
       <div className="mt-28 rounded-sm max-w-2xl flex flex-col mx-auto gap-3">
         <div className="text-center text-xl font-sans cursor-default select-none text-red-500">
           To see Projects you must Login

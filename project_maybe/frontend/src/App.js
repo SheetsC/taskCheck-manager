@@ -215,8 +215,8 @@ export function App() {
               userProjects={userProjects}
               userTasks={userTasks}/>}
              />
-            <Route path="/users/login" element={<UserLogin handleLogin={handleLogin} />} />
-            <Route path="/clients/login" element={<ClientLogin handleLogin={handleLogin} />} />
+            <Route path="/users/login" element={<UserLogin user={user} client={client} handleLogin={handleLogin} />} />
+            <Route path="/clients/login" element={<ClientLogin client={client} user={user} handleLogin={handleLogin} />} />
             <Route path="/users/signup" element={<UserSignUp setUser={setUser} />} />
             <Route path="/clients/signup" element={<ClientSignUp setUser={setUser} />} />
             <Route path={`/${user?.username}/projects`} element={<Projects 
@@ -230,14 +230,14 @@ export function App() {
               userTasks={userTasks}/>} 
             />
             <Route path={`/${client?.name}/projects`} element={<Projects 
-              userProjects={userProjects} 
-              projectTasks={projectTasks}
-              projects={userProjects}
-              setProjects={setUserProjects}
-              projectStates={projectStates} // Pass the project state object as a prop
-              setProjectStates={setProjectStates}
-              user={user} // Pass the setter function for the project state object as a prop
-              userTasks={userTasks}/>
+              projectStates={projectStates} // 
+              user={user}
+              userTasks={userTasks}
+              client={client}
+              clientProjects={clientProjects}
+            />
+              
+              
             } 
             />
             <Route path={`/${client?.name}/users`} element={<Users client={client} clientUsers={clientUsers}/>}

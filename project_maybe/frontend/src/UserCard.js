@@ -26,7 +26,7 @@ export default function UserCard({ id, name, logged_in, username, client }) {
         isOpen={showModal}
         onRequestClose={seeProjects}
         contentLabel='Project Info'
-        
+        className='bg-inherit'
       >
         <h2>Project Info:</h2>
         <div className='grid grid-cols-2 gap-3 mx-auto'>
