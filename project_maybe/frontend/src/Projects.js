@@ -12,7 +12,7 @@ export function Projects({
   clientProjects
 }) {
   const clientProjectComponents = 
-    clientProjects.map(_project => {
+    clientProjects?.map(_project => {
       return(
         <ProjectCard
         key={_project.id}
@@ -27,7 +27,7 @@ export function Projects({
   
   for (const projectId in projectStates) {
     const project = projectStates[projectId];
-    const theseTasks = userTasks.filter(
+    const theseTasks = userTasks?.filter(
       (tasks) => tasks.project_id === project.id
     );
 
@@ -55,7 +55,12 @@ export function Projects({
         <div><br/></div>
         <div className="bg-scroll cursor-pointer">{userProjectComponents}</div>
       </div>
-    ) : client ? (<div>{clientProjectComponents}</div>): (
+    ) : client ? (
+   <div> 
+    
+    <div>{clientProjectComponents}</div>
+  </div>
+    ): (
       <div className="mt-28 rounded-sm max-w-2xl flex flex-col mx-auto gap-3">
         <div className="text-center text-xl font-sans cursor-default select-none text-red-500">
           To see Projects you must Login

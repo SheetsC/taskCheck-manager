@@ -51,7 +51,7 @@ export default function UserCard({ id, name, logged_in, username, client }) {
                 );
                 })}
             </div>
-            <hr className='bg-red-950' />
+            {/* <hr className='bg-red-950' /> */}
           </div>
         ))}
         </div>
