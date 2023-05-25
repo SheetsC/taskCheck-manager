@@ -42,11 +42,11 @@ export function TaskForm({ projectId, user, addNewTask }) {
 
   return (
     <div className="mx-auto font-sans text-center justify-between gap-x-6 p-6 lg:px-8">
-      <div className="mx-10 mb-8 border rounded shadow-sm p-6">
-        <h2 className="p-6 my-3 text-4xl font-bold">Add a Task</h2>
+      <div className="mx-10 mb-8 border-none shadow-sm p-6">
+        <h2 className="p-6 my-3 text-yellow-500 text-4xl font-bold">Add a Task</h2>
         <form onSubmit={formik.handleSubmit} className="mx-auto mt-6 max-w-lg grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="description" className="block text-sm font-semibold font-sans leading-6 text-gray-900">Description</label>
+            <label htmlFor="description" className="block text-sm font-semibold font-sans leading-6  text-yellow-500">Description</label>
             <input
               type="text"
               name="description"
@@ -61,7 +61,7 @@ export function TaskForm({ projectId, user, addNewTask }) {
             )}
           </div>
           <div>
-            <label htmlFor="dueDate" className="block text-sm font-sans leading-6 text-gray-900">Due</label>
+            <label htmlFor="dueDate" className="block text-sm font-sans leading-6  text-yellow-500">Due</label>
             <input
               type="date"
               name="dueDate"
@@ -76,7 +76,7 @@ export function TaskForm({ projectId, user, addNewTask }) {
             )}
           </div>
           <div className="w-full">
-            <label htmlFor="status" className="block text-sm font-semibold font-sansleading-6 text-gray-900">Status</label>
+            <label htmlFor="status" className="block text-sm font-semibold font-sansleading-6  text-yellow-500">Status</label>
             <input
               type="text"
               name="status"
@@ -90,7 +90,7 @@ export function TaskForm({ projectId, user, addNewTask }) {
               <div className="text-red-500">{formik.errors.status}</div>
             )}
           </div>
-          <button type="submit" className="block w-full font-sans rounded-md bg-blue-500 px-3.5 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-500">Add Task</button>
+          <button type="submit" className="block w-full font-sans rounded-md bg-yellow-500 px-3.5 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-500">Add Task</button>
             </form>
         </div>
         </div>

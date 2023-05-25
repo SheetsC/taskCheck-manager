@@ -40,7 +40,7 @@ function MyCalendar({user, userTasks}) {
   return (
     <div className='mx-auto my-auto z-3'>
         <div className='my-3'>
-            <h2 className="text-3xl text-center my-19 font-semibold mb-4">My Calendar</h2>
+            <h2 className="text-3xl text-violet-500 text-center my-19 font-semibold mb-4">My Calendar</h2>
             <div className="mx-auto items-center p-4 rounded-lg shadow-md">
                 <Calendar
                     onChange={handleDateChange}

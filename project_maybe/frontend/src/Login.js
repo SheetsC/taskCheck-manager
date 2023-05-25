@@ -47,7 +47,7 @@ export function Login({ handleLogin }) {
                     <h2 class="text-3xl font-bold cursor-default select-none tracking-tight text-violet-500 sm:text-5xl">Login</h2>
                 </div>
                 <div>
-                    <label for="username" class="block text-sm font-semibold leading-6 text-gray-900 cursor-default select-none">Username</label>
+                    <label for="username" class="block text-sm font-semibold leading-6 text-violet-500 cursor-default select-none">Username</label>
                     <input
                         type="text"
                         name="username"
@@ -58,7 +58,7 @@ export function Login({ handleLogin }) {
                     />
                 </div>
                 <div class="z-0 relative w-full">
-                    <label className="cursor-default select-none" htmlFor="password">Password: </label>
+                    <label className="cursor-default  text-violet-500 select-none" htmlFor="password">Password: </label>
                     <div class="absolute inset-y-11 right-0 flex items-center px-2">
                         <span class="z-auto cursor-pointer select-none" onClick={handleShow}>
                         {show ? "🙊":"🙈"}
@@ -79,9 +79,9 @@ export function Login({ handleLogin }) {
                     <button type="submit" class="block w-full rounded-full bg-violet-500 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">Login</button>
                     {/* <Link to="/events"><button type="submit" class="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">Login</button></Link> */}
                 </div>
-                <div class="mx-auto flex items-center cursor-default select-none  gap-x-2">
+                <div class="mx-auto flex  text-violet-500 items-center cursor-default select-none  gap-x-2">
                     <p>Don't have an account?</p>
-                    <Link className="signupbtn" to="/signup">Sign Up!</Link>
+                    <Link className="signupbtn text-blue-500" to="/signup">Sign Up!</Link>
                 </div>
             </form>
             {isOpen && (

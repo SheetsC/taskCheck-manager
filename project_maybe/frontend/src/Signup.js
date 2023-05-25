@@ -58,9 +58,9 @@ export function SignUp({ setUser }) {
         <div class='mt-28'>
             <form onSubmit={formik.handleSubmit} class="mx-auto mt-16 max-w-sm sm:mt-20">
                 <div class="mx-auto max-w-2xl text-center justify-between gap-x-6 p-6 lg:px-8">
-                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">Sign Up</h2>
+                    <h2 class="text-3xl font-bold tracking-tight text-blue-500 sm:text-5xl">Sign Up</h2>
                 </div>
-                <label for="username">Username </label>
+                <label className='text-blue-500' for="username">Username </label>
                 <input
                 type="text"
                 name="username"
@@ -72,12 +72,11 @@ export function SignUp({ setUser }) {
                 />
                 <p style={{ color: "red" }}> {formik.errors.username}</p>
                 <div class="relative w-full">
-                    <label htmlFor="password">Password</label>
+                    <label className='text-blue-500' htmlFor="password">Password</label>
                     <div class="absolute inset-y-11 right-0 flex items-center px-2">
                         <input class="hidden js-password-toggle" id="toggle" type="checkbox" />
-                        <span class="z-auto ">
-                            {show ? <FontAwesomeIcon icon="fa-solid fa-eye" onClick={handleShow}/> :  <FontAwesomeIcon icon="fa-solid fa-eye-slash" onClick={handleShow}/>
-                            }
+                        <span class="z-auto cursor-pointer select-none" onClick={handleShow}>
+                        {show ? "🙊":"🙈"}
                         </span>
                     </div>
                     <input
@@ -91,7 +90,7 @@ export function SignUp({ setUser }) {
                     <p style={{ color: "red" }}> {formik.errors.password}</p>
                 </div>
 
-                <label for="name"> Name</label>
+                <label className='text-blue-500'for="name"> Name</label>
                 <input
                 type="text"
                 name="name"
@@ -103,7 +102,7 @@ export function SignUp({ setUser }) {
                 <p style={{ color: "red" }}> {formik.errors.name}</p>
 
                 <div class="mt-10">
-                    <button type="submit" class="block w-full rounded-full bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">Submit</button>
+                    <button type="submit" class="block w-full rounded-full bg-blue-500 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">Submit</button>
                 </div>
             </form>
         </div>
