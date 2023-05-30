@@ -9,14 +9,14 @@ from models import User, Task, Project
 
 NO_AUTH_ENDPOINTS = ['login', 'signup','check_session']
 
-@app.before_request
-def check_if_logged_in():
+# @app.before_request
+# def check_if_logged_in():
 
-    if request.endpoint in NO_AUTH_ENDPOINTS:
-        return None
+#     if request.endpoint in NO_AUTH_ENDPOINTS:
+#         return None
   
-    if not session.get('user_id'):
-        return {'error': 'Unauthorized, Please log in'}, 401
+#     if not session.get('user_id'):
+#         return {'error': 'Unauthorized, Please log in'}, 401
 class Home(Resource):
     def get(self):
         return {'message': '200: Welcome to our Home Page'}, 200
