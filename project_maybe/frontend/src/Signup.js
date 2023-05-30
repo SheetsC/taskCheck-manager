@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {useNavigate} from 'react-router-dom'
 import {useFormik} from "formik"
 import * as yup from "yup"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 export function SignUp({ setUser }) {
@@ -32,7 +31,7 @@ export function SignUp({ setUser }) {
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
-            fetch("/signup", {
+            fetch("https://taskcheck-manager.herokuapp.com/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
