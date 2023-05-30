@@ -16,7 +16,7 @@ export function TaskCard({
   const [isComplete, setIsComplete] = useState(complete);
 
   async function checkAndPatchProjectCompletion() {
-    const projectResponse = await fetch(`/projects/${projectId}`);
+    const projectResponse = await fetch(`https://taskcheck-manager.onrender.com/projects/${projectId}`);
     const projectData = await projectResponse.json();
 
     const allTasksCompleted = projectData[0].tasks.every((task) => {
@@ -27,7 +27,7 @@ export function TaskCard({
 
     try {
       if (allTasksCompleted) {
-        const response = await fetch(`/projects/${projectId}`, {
+        const response = await fetch(`https://taskcheck-manager.onrender.com/projects/${projectId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ complete: newCompleteValue }),
@@ -37,7 +37,7 @@ export function TaskCard({
         }
       }
       if (!allTasksCompleted) {
-        const response = await fetch(`/projects/${projectId}`, {
+        const response = await fetch(`https://taskcheck-manager.onrender.com/projects/${projectId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ complete: newCompleteValue }),
@@ -54,7 +54,7 @@ export function TaskCard({
   const toggleComplete = async () => {
     const newCompleteValue = isComplete ? 0 : 1;
     try {
-      const response = await fetch(`/tasks/${id}`, {
+      const response = await fetch(`https://taskcheck-manager.onrender.com/tasks/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ complete: newCompleteValue }),
@@ -70,7 +70,7 @@ export function TaskCard({
   };
   const handleDelete = () => {
     deleteTask(id);
-    fetch(`/tasks/${id}`, {
+    fetch(`https://taskcheck-manager.onrender.com/tasks/${id}`, {
       method: "DELETE",
     });
   };

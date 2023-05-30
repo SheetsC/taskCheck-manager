@@ -8,7 +8,7 @@ export function ProjectCard({ project, user, tasks }) {
 
     
   useEffect(() => {
-    fetch(`/projects/${project.id}`)
+    fetch(`https://taskcheck-manager.onrender.com/projects/${project.id}`)
     .then(r=>r.json())
     .then(projData=> {
       setUsers(projData[0].users)

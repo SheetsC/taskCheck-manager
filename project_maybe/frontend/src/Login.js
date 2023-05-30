@@ -32,6 +32,7 @@ export function Login({ handleLogin }) {
         }).then((r) => {
             if (r.ok) {
                 r.json().then((user) => handleLogin(user))
+                console.log(r.json())
                 nagigate('/')
             }
             else {

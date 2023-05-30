@@ -26,7 +26,7 @@ export function TaskForm({ projectId, user, addNewTask }) {
         user_id: user.id,
       };
 
-      fetch(`/projects/${projectId}/tasks`, {
+      fetch(`https://taskcheck-manager.onrender.com/projects/${projectId}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTask),

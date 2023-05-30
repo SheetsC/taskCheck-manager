@@ -23,9 +23,10 @@ class Home(Resource):
     
 class SignUp(Resource):
     def post(self):
-        password = request.json['password']
-        name = request.json['name']
-        username = request.json['username']
+        data = request.get_json()
+        password = data.get('password')
+        name = data.get('name')
+        username = data.get('username')
 
         special_characters = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '{', '}', '[', ']', '|', '\\', ';', ':', "\'",',','.', '<', '>', '/', '?']
         if len(password) < 8 and not any(char in special_characters for char in password):

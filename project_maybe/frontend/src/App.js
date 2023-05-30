@@ -16,7 +16,7 @@ export function App() {
   const [isLoading, setIsLoading] = useState(true); // add loading state
   useEffect(() => {
     setIsLoading(true); // set loading to true before making the fetch request
-    fetch('/check_session').then((response) => {
+    fetch('https://taskcheck-manager.onrender.com/check_session').then((response) => {
       if (response.ok) {
         response.json().then((user) => {
           sessionStorage.setItem('user', JSON.stringify(user));
@@ -34,7 +34,7 @@ export function App() {
   useEffect(() => {
     setIsLoading(true);
     if (user?.id) {
-      fetch(`/users/${user.id}`)
+      fetch(`https://taskcheck-manager.onrender.com/users/${user.id}`)
         .then(response => response.json())
         .then(userData => {
           // Set user's projects
