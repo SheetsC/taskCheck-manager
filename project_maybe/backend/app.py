@@ -370,5 +370,5 @@ api.add_resource(Home, '/')
 import os 
 port = int(os.environ.get("PORT", 5555))
 if __name__ == '__main__':
-    app.run(port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
     
