@@ -39,7 +39,7 @@ export function SignUp({ setUser }) {
                 body: JSON.stringify(values, null, 2),
             }).then((r) => {
                 if (r.ok) {
-                    r.json().then((user) => setUser(user));
+                    r.json()?.then((user) => setUser(user));
                 }
             });
             navigate('/login')
