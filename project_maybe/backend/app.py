@@ -367,5 +367,8 @@ api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 
 api.add_resource(Home, '/')
 
+import os 
+port = int(os.environ.get("PORT", 5555))
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(port=port, debug=True)
+    
