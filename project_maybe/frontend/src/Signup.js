@@ -31,7 +31,7 @@ export function SignUp({ setUser }) {
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
-            fetch("/signup", {
+            fetch("https://taskcheck-manager.onrender.com/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
