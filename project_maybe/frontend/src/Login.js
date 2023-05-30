@@ -22,7 +22,7 @@ export function Login({ handleLogin }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        fetch("/login", {
+        fetch("https://taskcheck-manager.onrender.com/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
