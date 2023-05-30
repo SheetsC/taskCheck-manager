@@ -1,1 +1,1 @@
-web: python backend/app.py
+web: python project_maybe/backend/app.py runserver 0.0.0.0:5555
