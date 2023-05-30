@@ -31,7 +31,7 @@ export function SignUp({ setUser }) {
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
-            fetch("https://taskcheck-manager.herokuapp.com/signup", {
+            fetch("/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
