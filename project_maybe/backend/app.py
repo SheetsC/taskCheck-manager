@@ -368,7 +368,9 @@ api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Home, '/')
 
 import os 
+from flask_cors import CORS
 port = int(os.environ.get("PORT", 5555))
 if __name__ == '__main__':
+    CORS(app)
     app.run(host='0.0.0.0', port=port, debug=True)
     
