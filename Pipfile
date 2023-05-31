@@ -14,6 +14,7 @@ datetime = "*"
 ipdb = "==0.13.5"
 flask-bcrypt = "*"
 bcrypt = "*"
+gunicorn = "*"
 
 [dev-packages]
 
