@@ -368,19 +368,8 @@ api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Home, '/')
 
 import os
-from flask_cors import CORS
 
-app = Flask(__name__)
-
-# Configure CORS
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['CORS_ORIGINS'] = [
-    'https://taskcheck-manager.onrender.com'  
-]
-
-# Add your routes and other code here
-
+port = os.environ.get('5555')
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5555))
     app.run(host='0.0.0.0', port=port)
