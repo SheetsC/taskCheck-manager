@@ -368,8 +368,19 @@ api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Home, '/')
 
 import os
+from flask_cors import CORS
 
-port = os.environ.get('5555')
+app = Flask(__name__)
+
+# Configure CORS
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_ORIGINS'] = [
+    'https://task-check-manager.vercel.app'  # Replace with your frontend URL
+]
+
+# Add your routes and other code here
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5555))
     app.run(host='0.0.0.0', port=port)
