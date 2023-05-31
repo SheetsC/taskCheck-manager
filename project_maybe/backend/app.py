@@ -376,7 +376,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['CORS_ORIGINS'] = [
-    'https://task-check-manager.vercel.app'  # Replace with your frontend URL
+    'https://taskcheck-manager.onrender.com'  
 ]
 
 # Add your routes and other code here
