@@ -11,7 +11,7 @@ class Task(db.Model, SerializerMixin):
     serialize_rules = ('-users', '-projects', '-user', '-project')
 
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.Text, nullable=False, unique=True)
+    description = db.Column(db.Text, nullable=False)
     due_date = db.Column(db.String, nullable=False)
     status = db.Column(db.String())
     complete = db.Column(db.Boolean, default= False)
@@ -22,12 +22,12 @@ class Task(db.Model, SerializerMixin):
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
-    # serialize_rules = ('-tasks.user,description,due_date,complete',)
-    serialize_rules = ('-tasks','-projects', '-_password_hash', )
-    id = db.Column(db.Integer, primary_key= True )
-    logged_in = db.Column(db.Boolean, default= False)
+    serialize_rules = ('-tasks', '-projects', '-_password_hash', )
+    
+    id = db.Column(db.Integer, primary_key=True)
+    logged_in = db.Column(db.Boolean, default=False)
     name = db.Column(db.String, nullable=False)
-    username = db.Column(db.String, unique= True)
+    username = db.Column(db.String, unique=True)
     _password_hash = db.Column(db.String, nullable=False)
 
     tasks = db.relationship('Task', backref='user', cascade='all, delete-orphan')
@@ -36,7 +36,7 @@ class User(db.Model, SerializerMixin):
     @hybrid_property
     def password_hash(self):
         raise Exception('Password hashes may not be viewed.')
-    # add @validate to backend for username, and other potential issues
+
     @password_hash.setter
     def password_hash(self, password):
         password_hash = bcrypt.generate_password_hash(
@@ -50,12 +50,14 @@ class User(db.Model, SerializerMixin):
     @staticmethod
     def simple_hash(input):
         return sum(bytearray(input, encoding='utf-8'))
-    
+
     @validates('username')
     def validate_username(self, key, username):
         if len(username) < 5:
-            raise ValueError("Username must be at least 3 characters long.")
+            raise ValueError("Username must be at least 5 characters long.")
         return username
+
+
 
 
 class Project(db.Model, SerializerMixin):
@@ -83,7 +85,7 @@ class Project(db.Model, SerializerMixin):
     
     @validates('name')
     def validates_name(self, key, name):
-        if len(name) != 5:
+        if len(name) < 5:
             raise ValueError('Project name must be longer needs {len(name)} - 5} more ')
         return name
     

@@ -4,7 +4,7 @@ import datetime
 
 
 
-from config import app, db, api, bcrypt
+from config import app, db, api, bcrypt, os
 from models import User, Task, Project
 
 NO_AUTH_ENDPOINTS = ['login', 'signup','check_session']
@@ -36,7 +36,8 @@ class SignUp(Resource):
         if user_exists:
             return jsonify({"error": "Username already in-use"}), 409
 
-        hashed_password = bcrypt.generate_password_hash(password)
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
         new_user = User(
             name= name,
             _password_hash=hashed_password,  
@@ -62,7 +63,7 @@ class Login(Resource):
         # if user.authenticate(password):
         if user is None:
             return {'error': 'Invalid username or password'}, 401
-        if not bcrypt.check_password_hash(user._password_hash, password):
+        if not bcrypt.check_password_hash(user._password_hash, password.encode('utf-8')):
             return {'error': 'Invalid username or password'}, 401
 
         flash("Login Successful!")
@@ -367,8 +368,7 @@ api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 
 api.add_resource(Home, '/')
 
-import os
 
-port = int(os.environ.get('PORT', 5555))
+port = int(os.environ.get('PORT', 5432))
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port, debug=True)
