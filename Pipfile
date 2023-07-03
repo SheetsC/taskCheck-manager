@@ -15,6 +15,7 @@ ipdb = "==0.13.5"
 flask-bcrypt = "*"
 bcrypt = "*"
 gunicorn = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
