@@ -1,8 +1,8 @@
-"""show me schema
+"""Initial migration
 
-Revision ID: 78bc788f4fcd
+Revision ID: cd09498be05e
 Revises: 
-Create Date: 2023-04-25 06:25:41.025268
+Create Date: 2023-07-03 09:54:59.569344
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '78bc788f4fcd'
+revision = 'cd09498be05e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,31 +23,34 @@ def upgrade():
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('budget', sa.Float(), nullable=False),
-    sa.Column('start_date', sa.DateTime(), nullable=False),
-    sa.Column('end_date', sa.DateTime(), nullable=False),
-    sa.Column('status', sa.String(length=255), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('start_date', sa.DateTime(), nullable=True),
+    sa.Column('end_date', sa.String(), nullable=True),
+    sa.Column('status', sa.String(length=255), nullable=True),
+    sa.Column('complete', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('logged_in', sa.Boolean(), nullable=True),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('username', sa.String(), nullable=True),
-    sa.Column('password_hash', sa.String(), nullable=False),
+    sa.Column('_password_hash', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('username')
     )
     op.create_table('tasks',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('due_date', sa.DateTime(), nullable=False),
-    sa.Column('status', sa.String(), nullable=False),
+    sa.Column('description', sa.Text(), nullable=False),
+    sa.Column('due_date', sa.String(), nullable=False),
+    sa.Column('status', sa.String(), nullable=True),
+    sa.Column('complete', sa.Boolean(), nullable=True),
     sa.Column('project_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['project_id'], ['projects.id'], name=op.f('fk_tasks_project_id_projects')),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_tasks_user_id_users')),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('description')
     )
     # ### end Alembic commands ###
 
