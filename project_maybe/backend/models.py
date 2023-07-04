@@ -2,9 +2,18 @@ from sqlalchemy_serializer import SerializerMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
-from config import db, bcrypt
+from sqlalchemy import MetaData
+from app import app
 from datetime import datetime
 from sqlalchemy.orm import validates
+from flask_migrate import Migrate
+
+metadata = MetaData(naming_convention={
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+})
+db = SQLAlchemy(metadata=metadata)
+migrate = Migrate(app, db)
+db.init_app(app)
 
 class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
