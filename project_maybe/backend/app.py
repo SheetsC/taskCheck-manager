@@ -1,28 +1,8 @@
 from flask import Flask, make_response, jsonify, request, session, flash
 from flask_restful import Resource
-from flask_cors import CORS
 
-from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
-
-from flask_bcrypt import Bcrypt
-from datetime import timedelta
-import os 
-
-
-app = Flask(__name__)
-app.secret_key = b'capstoneconnor'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.json.compact = False
-app.permanent_session_lifetime = timedelta(days=30)
-
-
-api = Api(app)
-
-bcrypt = Bcrypt(app)
-
-CORS(app)
+from config import app, db, api, bcrypt, os
+from models import User, Task, Project
 
 NO_AUTH_ENDPOINTS = ['login', 'signup','check_session']
 
