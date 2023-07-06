@@ -4,6 +4,8 @@ from flask_restful import Resource
 from config import app, db, api, bcrypt, os
 from models import User, Task, Project
 
+
+
 NO_AUTH_ENDPOINTS = ['login', 'signup','check_session']
 
 @app.before_request
