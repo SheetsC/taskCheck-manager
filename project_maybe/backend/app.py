@@ -297,39 +297,30 @@ class ProjectsByUserId(Resource):
     
     def post(self, id):
         data = request.get_json()
-        description = data['description']
-        name = data['name']
-        start_date = data['start_date']
-        budget = data['budget']
-        end_date = data['end_date']
-        due_date = data['due_date']
-        complete = False
-        user_id = id
-        
+        project_data = data['project']
+        task_data = data['task']
+
         try:
-            new_project = Project(name=name, 
-                                start_date=start_date,
-                                budget=budget,
-                                end_date=end_date,
-                                complete=complete)
-            
+            new_project = Project(name=project_data['name'], 
+                                start_date=project_data['start_date'],
+                                end_date=project_data['end_date'],
+                                complete=project_data['complete'])
             db.session.add(new_project)
-            
-            task_for_new_project = Task(description=description, 
-                                        due_date=due_date, 
-                                        complete=complete,
+            db.session.commit()
+            task_for_new_project = Task(description=task_data['description'], 
+                                        due_date=task_data['due_date'], 
+                                        complete=task_data['complete'],
                                         project_id=new_project.id,
-                                        user_id=user_id)
-            
+                                        user_id=id)
             db.session.add(task_for_new_project)
             db.session.commit()
-            
-            return make_response({"message": "Project and Task created successfully"}, 201)
+
+            return make_response({"message": "Project and Task created successfully",
+                                "project_id": new_project.id}, 201)
             
         except Exception as e:
             db.session.rollback()
             return make_response({"error": str(e)}, 400)
-
 
         
 class TaskByProjectId (Resource):
