@@ -1,8 +1,9 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ProjectCard } from "./ProjectCard";
 import {Link} from "react-router-dom";
 import MyCalendar from "./MyCalendar";
+import { ProjectForm } from "./ProjectForm";
 
 export function Projects({
   projectStates,
@@ -11,7 +12,13 @@ export function Projects({
   userProjects,
   projectTasks,
   userTasks,
+  addNewTask
 }) {
+  const [seeProjectForm, showProjectForm] = useState(false)
+
+  const seeForm =()=>{
+    showProjectForm(!seeProjectForm)
+  }
   const projectComponents = [];
   
   for (const projectId in projectStates) {
@@ -38,7 +45,11 @@ export function Projects({
           <div className="px-16 mx-auto my-1 text-center rounded-full cursor-default select-none text-4xl font-sans bg-violet-500 py-4 text-white">Welcome, {user?.name}</div>
           <MyCalendar user={user} userTasks={userTasks} className='bg-black my-1 flex top-2 z-0'/>
         </div>
-        <div><br/></div>
+        <div><br/> </div>
+        <button className=' mt-0 px-6 py-0 fixed left-3 text-right rounded-xl text-xl font-sans bg-yellow-500 text-white"'onClick={seeForm}>+</button>
+        {seeProjectForm ? (
+          <ProjectForm key={1} user={user} addNewTask={addNewTask} />
+        ) : null}
         <div className="bg-scroll">{projectComponents}</div>
       </div>
     ) : (
