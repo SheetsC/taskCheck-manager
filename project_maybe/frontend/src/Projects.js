@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { ProjectCard } from "./ProjectCard";
 import {Link} from "react-router-dom";
@@ -12,45 +11,49 @@ export function Projects({
   userProjects,
   projectTasks,
   userTasks,
-  addNewTask
+  addNewProject
 }) {
   const [seeProjectForm, showProjectForm] = useState(false)
+  const [projectComponents, setProjectComponents] = useState([]); // <-- Declare new state for project components
 
   const seeForm =()=>{
     showProjectForm(!seeProjectForm)
   }
-  const projectComponents = [];
-  
-  for (const projectId in projectStates) {
-    const project = projectStates[projectId];
-    const theseTasks = userTasks.filter(
-      (tasks) => tasks.project_id === project.id
-    );
-    projectComponents.push(
-      <ProjectCard
-        key={project.id}
-        project={project}
-        user={user}
-        tasks={theseTasks}
-      />
-    );
-  }
 
+  useEffect(() => {
+    const newProjectComponents = [];
   
+    for (const projectId in projectStates) {
+      const project = projectStates[projectId];
+      const theseTasks = userTasks.filter(
+        (tasks) => tasks.project_id === project.id
+      );
+      newProjectComponents.push(
+        <ProjectCard
+          key={project.id}
+          project={project}
+          user={user}
+          tasks={theseTasks}
+        />
+      );
+    }
+
+    setProjectComponents(newProjectComponents); // <-- Update the project components state
+  }, [projectStates|| user || userTasks]); // <-- Run this effect when projectStates, user, or userTasks changes
 
   return (
     user ? (
       <div>
-        <div className="fixed right-20 z-0" >
+        <div className="flex right-20 z-0" >
           <div className="px-16 mx-auto my-1 text-center rounded-full cursor-default select-none text-4xl font-sans bg-violet-500 py-4 text-white">Welcome, {user?.name}</div>
           <MyCalendar user={user} userTasks={userTasks} className='bg-black my-1 flex top-2 z-0'/>
         </div>
         <div><br/> </div>
         <button className=' mt-0 px-6 py-0 fixed left-3 text-right rounded-xl text-xl font-sans bg-yellow-500 text-white"'onClick={seeForm}>+</button>
         {seeProjectForm ? (
-          <ProjectForm key={1} user={user} addNewTask={addNewTask} />
+          <ProjectForm key={1} user={user} addNewProject={addNewProject} />
         ) : null}
-        <div className="bg-scroll">{projectComponents}</div>
+        <div className="bg-scroll">{projectComponents}</div> {/* <-- Render the project components */}
       </div>
     ) : (
       <div className="mt-28 rounded-sm max-w-2xl flex flex-col mx-auto gap-3">
@@ -65,4 +68,4 @@ export function Projects({
       </div>
     )
   );
-}
+} 

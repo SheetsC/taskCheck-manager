@@ -118,7 +118,15 @@ export function App() {
     setUserTasks(userTasks.filter(task => task.id !== task_id))
 }
   
-  
+const addNewProject = (projectObj, taskObj ) => {
+  setProjectStates(prevState => {
+      console.log(projectObj)
+      return {...prevState, [projectObj.id]: projectObj}
+      
+  });
+  setUserTasks([taskObj, ...userTasks])
+}
+
   const addNewTask = (useid, projectId, taskObj) => {
     setUserTasks(prevTasks => {
       const updatedTasks = [{ ...taskObj }, ...prevTasks];
@@ -174,7 +182,8 @@ export function App() {
               projectStates={projectStates} // Pass the project state object as a prop
               setProjectStates={setProjectStates}
               user={user} // Pass the setter function for the project state object as a prop
-              userTasks={userTasks}/>} 
+              userTasks={userTasks}
+              addNewProject={addNewProject}/>} 
             />
         </Routes>
 

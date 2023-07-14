@@ -69,7 +69,7 @@ class Project(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False, unique=True)
     description = db.Column(db.Text)
-    budget = db.Column(db.Float, nullable= False)
+    budget = db.Column(db.Float)
     start_date = db.Column(db.DateTime, default=datetime.utcnow)
     end_date = db.Column(db.String())
     status = db.Column(db.String(255))

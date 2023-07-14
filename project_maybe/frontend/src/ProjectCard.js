@@ -8,7 +8,7 @@ export function ProjectCard({ project, user, tasks }) {
 
     
   useEffect(() => {
-    fetch(`/projects/${project.id}`)
+    fetch(`/projects/${project?.id}`)
     .then(r=>r.json())
     .then(projData=> {
       setUsers(projData[0].users)
@@ -18,7 +18,7 @@ export function ProjectCard({ project, user, tasks }) {
           ))
       
     })
-  },[user])
+  },[user || tasks])
   console.log(tasks);
   const myUndoneTasks= tasks.filter(task=> task.user_id === user.id && task.complete !== true)
   console.log(myUndoneTasks);

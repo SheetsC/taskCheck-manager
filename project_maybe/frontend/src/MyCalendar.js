@@ -11,10 +11,10 @@ function MyCalendar({user, userTasks}) {
 
   // Function to check if a date has a task due
   function hasTaskDue(date) {
-    return userTasks.some(task => task.due_date === date.toISOString().slice(0, 10) && task.complete !== true);
+    return userTasks?.some(task => task.due_date === date.toISOString().slice(0, 10) && task.complete !== true);
   }
   function didTaskDue(date) {
-    return userTasks.some(task => task.due_date === date.toISOString().slice(0, 10) && task.complete === true);
+    return userTasks?.some(task => task.due_date === date.toISOString().slice(0, 10) && task.complete === true);
   }
 
 

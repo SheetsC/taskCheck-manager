@@ -3,8 +3,8 @@ from flask_restful import Resource
 
 from config import app, db, api, bcrypt, os
 from models import User, Task, Project
-
-
+import datetime
+from flask_bcrypt import Bcrypt
 
 NO_AUTH_ENDPOINTS = ['login', 'signup','check_session']
 
@@ -301,22 +301,28 @@ class ProjectsByUserId(Resource):
         task_data = data['task']
 
         try:
+            end_date = datetime.datetime.strptime(project_data['end_date'], '%Y-%m-%d').date()
             new_project = Project(name=project_data['name'], 
                                 start_date=project_data['start_date'],
-                                end_date=project_data['end_date'],
-                                complete=project_data['complete'])
+                                end_date=end_date,
+                                budget=01.00,
+                                complete=False)
+            
             db.session.add(new_project)
             db.session.commit()
+            due_date = datetime.datetime.strptime(task_data['due_date'], '%Y-%m-%d').date()
+
             task_for_new_project = Task(description=task_data['description'], 
-                                        due_date=task_data['due_date'], 
-                                        complete=task_data['complete'],
+                                        due_date=due_date, 
+                                        complete=False,
                                         project_id=new_project.id,
                                         user_id=id)
             db.session.add(task_for_new_project)
             db.session.commit()
 
             return make_response({"message": "Project and Task created successfully",
-                                "project_id": new_project.id}, 201)
+                                "project_id": new_project.id,
+                                "task_id": task_for_new_project.id}, 201)
             
         except Exception as e:
             db.session.rollback()
@@ -340,6 +346,7 @@ class TaskByProjectId (Resource):
             complete = False
             project_id = id
             user_id = data['user_id']
+            
 
             # Validate due date format
             try:
