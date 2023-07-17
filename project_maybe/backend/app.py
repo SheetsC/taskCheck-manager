@@ -1,10 +1,39 @@
 from flask import Flask, make_response, jsonify, request, session, flash
 from flask_restful import Resource
 
-from config import app, db, api, bcrypt, os
-from models import User, Task, Project
+
+from models import User, Task, Project, db
 import datetime
+
+from flask import Flask
+from flask_cors import CORS
+from flask_migrate import Migrate
+from flask_restful import Api
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import MetaData
 from flask_bcrypt import Bcrypt
+from datetime import timedelta
+import os 
+
+
+
+app = Flask(__name__)
+app.secret_key = b'capstoneconnor'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.json.compact = False
+app.permanent_session_lifetime = timedelta(days=30)
+
+
+
+migrate = Migrate(app, db)
+db.init_app(app)
+bcrypt = Bcrypt(app)
+api = Api(app)
+
+
+
+CORS(app)
 
 NO_AUTH_ENDPOINTS = ['login', 'signup','check_session']
 
@@ -62,7 +91,7 @@ class Login(Resource):
         # if user.authenticate(password):
         if user is None:
             return {'error': 'Invalid username or password'}, 401
-        if not bcrypt.check_password_hash(user._password_hash, password.encode('utf-8')):
+        if not user.authenticate(password, bcrypt):
             return {'error': 'Invalid username or password'}, 401
 
         flash("Login Successful!")

@@ -1,4 +1,3 @@
-from config import bcrypt, db
 from sqlalchemy_serializer import SerializerMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -7,8 +6,10 @@ from sqlalchemy import MetaData
 from datetime import datetime
 from sqlalchemy.orm import validates
 
-
-
+metadata = MetaData(naming_convention={
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+})
+db = SQLAlchemy(metadata=metadata)
 class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
     serialize_rules = ('-users', '-projects', '-user', '-project')
@@ -41,12 +42,12 @@ class User(db.Model, SerializerMixin):
         raise Exception('Password hashes may not be viewed.')
 
     @password_hash.setter
-    def password_hash(self, password):
+    def password_hash(self, password, bcrypt):
         password_hash = bcrypt.generate_password_hash(
             password.encode('utf-8'))
         self._password_hash = password_hash.decode('utf-8')
 
-    def authenticate(self, password):
+    def authenticate(self, password, bcrypt):
         return bcrypt.check_password_hash(
             self._password_hash, password.encode('utf-8'))
 
