@@ -2,7 +2,7 @@ from flask import Flask, make_response, jsonify, request, session, flash
 from flask_restful import Resource
 
 
-from models import User, Task, Project, db
+from .models import User, Task, Project, db
 import datetime
 
 from flask import Flask
